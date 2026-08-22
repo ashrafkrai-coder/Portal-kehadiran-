@@ -99,11 +99,9 @@ th{background:#efe9db}
 .staff-item .btn-edit{background:#dbeafe;color:#1e40af}
 .staff-item .btn-del{background:#fee2e2;color:#b91c1c}
 .muktamad{font-size:11px;color:#6b7280;text-align:center;margin-top:6px}
-#loginScreen{position:fixed;inset:0;background:linear-gradient(160deg,#04382c,#065f46 60%,#0a8f5b);z-index:60;display:none;align-items:center;justify-content:center;padding:20px}
-.login-kad{background:#fff;border-radius:20px;padding:22px;width:100%;max-width:360px;box-shadow:0 10px 40px rgba(0,0,0,.4);text-align:center}
-.login-kad .logo{margin:0 auto 10px}
-.login-kad h2{font-size:16px;margin-bottom:2px}
-.login-kad h3{font-size:12px;color:var(--hijau);margin-bottom:12px;font-weight:600}
+.login-card{background:#fff;border-radius:18px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:14px;border:1px solid var(--smp)}
+.login-card h2{font-size:16px;margin-bottom:2px}
+.login-card h3{font-size:12px;color:var(--hijau);margin-bottom:12px;font-weight:600}
 .login-mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
 .login-mode-tabs button{border:none;border-radius:14px;padding:11px 10px;font-weight:800;font-size:13px;cursor:pointer;background:#e5e7eb;color:#374151}
 .login-mode-tabs button.aktif{background:linear-gradient(135deg,#065f46,#059669);color:#fff;box-shadow:0 6px 16px rgba(5,150,105,.28)}
@@ -115,8 +113,8 @@ th{background:#efe9db}
 .login-actions .btn2{margin-top:0;padding:12px 10px;font-size:13px}
 .login-note{font-size:11px;color:#6b7280;line-height:1.35;margin-top:-2px}
 .login-admin-note{background:#ecfeff;border:1px solid #99f6e4;color:#115e59;border-radius:14px;padding:12px;font-size:12px;line-height:1.45;margin-top:6px;text-align:left}
-#loginScreen.mode-admin{align-items:flex-start;justify-content:flex-end;background:linear-gradient(160deg,rgba(4,56,44,.18),rgba(6,95,70,.28) 60%,rgba(10,143,91,.22));-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);padding:16px;pointer-events:none}
-#loginScreen.mode-admin .login-kad{pointer-events:auto;max-width:340px;margin-left:auto}
+.login-inline-toggle{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
+.login-inline-toggle .btn2{flex:1;min-width:120px}
 .logo-preview{width:120px;height:120px;border-radius:50%;margin:0 auto 12px;overflow:hidden;background:#eee;border:3px solid var(--emas);display:flex;align-items:center;justify-content:center;font-size:50px;cursor:pointer}
 .logo-preview img{width:100%;height:100%;object-fit:cover}
 </style>
@@ -131,11 +129,45 @@ th{background:#efe9db}
     <h2 id="taglineHeader">Pengurusan Pintar Imam, Bilal & Kakitangan</h2>
     <p id="tarikhLine">…</p>
   </div>
-  <button type="button" class="login-trigger" id="btnOpenLogin">Masuk</button>
 </div>
 
 <!-- UTAMA -->
 <section id="s-utama" class="screen active" role="main" aria-label="Skrin Utama">
+  <div id="loginPanel" class="login-card" hidden>
+   <div class="logo" id="logoLogin" role="img" aria-label="Logo Masjid" style="margin:0 auto 10px">🕌</div>
+   <h2 id="loginTitle">Masjid Attendance Pro</h2>
+   <h3>Pengurusan Pintar Masjid</h3>
+   <div class="login-mode-tabs" role="tablist" aria-label="Pilih mod masuk">
+    <button type="button" id="btnModeStaff" class="aktif" role="tab" aria-selected="true">Staff</button>
+    <button type="button" id="btnModeAdmin" role="tab" aria-selected="false">Admin</button>
+   </div>
+   <div id="staffEntryPane">
+    <p class="muktamad" style="margin-bottom:14px">Log masuk untuk lihat profil & kehadiran anda</p>
+    <label for="loginId">Pilih Profil / ID Staff</label>
+    <select id="loginId" aria-label="Pilih Profil Staff"></select>
+    <label for="loginPin">PIN</label>
+    <input type="password" id="loginPin" inputmode="numeric" placeholder="••••" autocomplete="off" aria-label="PIN Staff">
+    <div class="login-note">Staff gunakan ID dan PIN.</div>
+    <div class="login-actions">
+     <button type="button" class="btn2" id="btnLogin">🔓 Log Masuk</button>
+     <button type="button" class="btn2 merah" id="btnAdminShortcut">🔐 Admin</button>
+    </div>
+   </div>
+   <div id="adminEntryPane" hidden>
+    <p class="muktamad" style="margin-bottom:8px">Tab Admin dibuka di bawah panel ini. Masukkan PIN pada panel Admin untuk buka kunci.</p>
+    <div class="login-admin-note">
+     <b>Langkah Admin:</b><br>
+     1. Pilih tab Admin.<br>
+     2. Masukkan PIN pada panel Admin di bawah.<br>
+     3. Jika perlu, kembali ke Staff guna butang di atas.
+    </div>
+    <div class="login-actions" style="margin-top:12px">
+     <button type="button" class="btn2" id="btnBackToStaff">⬅ Staff</button>
+     <button type="button" class="btn2 merah" id="btnOpenAdminTab">🔐 Buka Admin</button>
+    </div>
+   </div>
+   <p class="muktamad">PIN default: 1234 • Boleh diubah oleh Admin</p>
+  </div>
   <div class="grid-profil blok" id="gridProfil" role="list" aria-label="Senarai Profil Staff"></div>
   <div class="masa-live" id="masaLive" aria-live="polite" aria-atomic="true">--:--:-- --</div>
   <div class="row-butang">
@@ -223,45 +255,6 @@ th{background:#efe9db}
   <button type="button" data-tab="laporan" aria-selected="false" aria-controls="s-laporan"><span aria-hidden="true">📊</span>Laporan</button>
   <button type="button" data-tab="admin" aria-selected="false" aria-controls="s-admin"><span aria-hidden="true">🔐</span>Admin</button>
 </nav>
-</div>
-
-<!-- LOGIN STAFF -->
-<div id="loginScreen" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
- <div class="login-kad">
-   <div class="logo" id="logoLogin" role="img" aria-label="Logo Masjid" style="margin:0 auto 10px">🕌</div>
-   <h2 id="loginTitle">Masjid Attendance Pro</h2>
-   <h3>Pengurusan Pintar Masjid</h3>
-   <div class="login-mode-tabs" role="tablist" aria-label="Pilih mod masuk">
-    <button type="button" id="btnModeStaff" class="aktif" role="tab" aria-selected="true">Staff</button>
-    <button type="button" id="btnModeAdmin" role="tab" aria-selected="false">Admin</button>
-   </div>
-   <div id="staffEntryPane">
-    <p class="muktamad" style="margin-bottom:14px">Log masuk untuk lihat profil & kehadiran anda</p>
-    <label for="loginId">Pilih Profil / ID Staff</label>
-    <select id="loginId" aria-label="Pilih Profil Staff"></select>
-    <label for="loginPin">PIN</label>
-    <input type="password" id="loginPin" inputmode="numeric" placeholder="••••" autocomplete="off" aria-label="PIN Staff">
-    <div class="login-note">Staff gunakan ID dan PIN.</div>
-    <div class="login-actions">
-     <button type="button" class="btn2" id="btnLogin">🔓 Log Masuk</button>
-     <button type="button" class="btn2 merah" id="btnAdminShortcut">🔐 Admin</button>
-    </div>
-   </div>
-   <div id="adminEntryPane" hidden>
-    <p class="muktamad" style="margin-bottom:8px">Tab Admin sudah dibuka di belakang. Masukkan PIN pada panel Admin untuk buka kunci.</p>
-    <div class="login-admin-note">
-     <b>Langkah Admin:</b><br>
-     1. Tab Admin dibuka terus tanpa tutup skrin ini.<br>
-     2. Masukkan PIN pada panel Admin di belakang.<br>
-     3. Jika perlu, kembali ke Staff guna butang di atas.
-    </div>
-    <div class="login-actions" style="margin-top:12px">
-     <button type="button" class="btn2" id="btnBackToStaff">⬅ Staff</button>
-     <button type="button" class="btn2 merah" id="btnOpenAdminTab">🔐 Buka Admin</button>
-    </div>
-   </div>
-   <p class="muktamad">PIN default: 1234 • Boleh diubah oleh Admin</p>
-  </div>
 </div>
 <div id="toast" role="status" aria-live="polite"></div>
 
@@ -537,10 +530,7 @@ function renderMasjid(){
  renderMasjidPreview();
 }
 function renderLoginButton(){
- const btn=$('#btnOpenLogin');
- if(!btn)return;
- const validSession=!!(sesi&&staff.some(s=>s.id===sesi));
- btn.textContent=validSession?'Tukar Akaun':'Masuk';
+ return;
 }
 function renderMasjidPreview(){
  const preview=$('#logoPreview');
@@ -809,31 +799,38 @@ let entryMode='staff';
 function setEntryMode(mode){
  entryMode=mode;
  const admin=mode==='admin';
- $('#loginScreen').classList.toggle('mode-admin',admin);
  $('#staffEntryPane').hidden=admin;
  $('#adminEntryPane').hidden=!admin;
  $('#btnModeStaff').classList.toggle('aktif',!admin);
  $('#btnModeAdmin').classList.toggle('aktif',admin);
  $('#btnModeStaff').setAttribute('aria-selected',String(!admin));
  $('#btnModeAdmin').setAttribute('aria-selected',String(admin));
- if(admin){
-  $('#loginScreen').style.display='flex';
- }else{
-  $('#loginScreen').classList.remove('mode-admin');
- }
 }
 function bukaLogin(mode='staff'){
  setEntryMode(mode);
- $('#loginScreen').style.display='flex';
+ const panel=$('#loginPanel');
+ if(panel){
+  panel.hidden=false;
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+ }
  renderLogin();
 }
 function renderLogin(){
  $('#loginId').innerHTML=staff.map(s=>`<option value="${s.id}">${s.nama} (${s.id}) — ${s.jawatan}</option>`).join('')||'<option value="">Tiada staff berdaftar</option>';
 }
 function semakSesi(){
- if(modTablet()){$('#loginScreen').style.display='none';return}
- if(sesi&&staff.some(s=>s.id===sesi)){pilih=sesi;LS.set('pk_pilih',pilih);$('#loginScreen').style.display='none'}
- else{$('#loginScreen').style.display='none';setEntryMode('staff')}
+ const panel=$('#loginPanel');
+ if(modTablet()){
+  if(panel)panel.hidden=true;
+  return;
+ }
+ if(sesi&&staff.some(s=>s.id===sesi)){
+  pilih=sesi;LS.set('pk_pilih',pilih);
+  if(panel)panel.hidden=true;
+ }else{
+  if(panel)panel.hidden=false;
+  setEntryMode('staff');
+ }
  renderLoginButton();
 }
 $('#btnLogin').onclick=()=>{
@@ -843,7 +840,6 @@ $('#btnLogin').onclick=()=>{
  sesi=s.id;localStorage.setItem('pk_sesi',sesi);
  masuk();
 };
-$('#btnOpenLogin').onclick=()=>bukaLogin('staff');
 $('#btnAdminShortcut').onclick=()=>{
  bukaLogin('admin');
  tukarTab('admin');
@@ -867,7 +863,8 @@ $('#btnOpenAdminTab').onclick=()=>{
 };
 function masuk(){
  const s=staff.find(x=>x.id===sesi);
- $('#loginScreen').style.display='none';
+ const panel=$('#loginPanel');
+ if(panel)panel.hidden=true;
  renderLoginButton();
  renderProfil();renderLog();renderLaporan();
  tukarTab(s&&s.jawatan!=='Staff'?'solat':'utama');

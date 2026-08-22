@@ -1,5 +1,5 @@
-/* Masjid Attendance Pro — Service Worker v4 (Supabase-ready) */
-const CACHE = 'masjid-pro-v4';
+/* Masjid Attendance Pro — Service Worker v5 (Supabase-ready) */
+const CACHE = 'masjid-pro-v5';
 const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', e => {
