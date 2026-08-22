@@ -1,0 +1,144 @@
+[debug] [2026-08-22T12:33:35.134Z] ----------------------------------------------------------------------
+[debug] [2026-08-22T12:33:35.314Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\RAM1\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2026-08-22T12:33:35.315Z] CLI Version:   15.28.1
+[debug] [2026-08-22T12:33:35.316Z] Platform:      win32
+[debug] [2026-08-22T12:33:35.318Z] Node Version:  v25.9.0
+[debug] [2026-08-22T12:33:35.318Z] Detected Agent: open_code
+[debug] [2026-08-22T12:33:35.319Z] Time:          Sat Aug 22 2026 20:33:35 GMT+0800 (Singapore Standard Time)
+[debug] [2026-08-22T12:33:35.319Z] ----------------------------------------------------------------------
+[debug] 
+[error] 
+[error] Error: Not in a Firebase app directory (could not locate firebase.json)
+[debug] [2026-08-22T12:33:52.498Z] ----------------------------------------------------------------------
+[debug] [2026-08-22T12:33:52.506Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\RAM1\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2026-08-22T12:33:52.507Z] CLI Version:   15.28.1
+[debug] [2026-08-22T12:33:52.507Z] Platform:      win32
+[debug] [2026-08-22T12:33:52.508Z] Node Version:  v25.9.0
+[debug] [2026-08-22T12:33:52.509Z] Detected Agent: open_code
+[debug] [2026-08-22T12:33:52.510Z] Time:          Sat Aug 22 2026 20:33:52 GMT+0800 (Singapore Standard Time)
+[debug] [2026-08-22T12:33:52.511Z] ----------------------------------------------------------------------
+[debug] 
+[error] 
+[error] Error: Not in a Firebase app directory (could not locate firebase.json)
+[debug] [2026-08-22T12:34:11.394Z] ----------------------------------------------------------------------
+[debug] [2026-08-22T12:34:11.402Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\RAM1\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2026-08-22T12:34:11.403Z] CLI Version:   15.28.1
+[debug] [2026-08-22T12:34:11.404Z] Platform:      win32
+[debug] [2026-08-22T12:34:11.404Z] Node Version:  v25.9.0
+[debug] [2026-08-22T12:34:11.405Z] Detected Agent: open_code
+[debug] [2026-08-22T12:34:11.406Z] Time:          Sat Aug 22 2026 20:34:11 GMT+0800 (Singapore Standard Time)
+[debug] [2026-08-22T12:34:11.406Z] ----------------------------------------------------------------------
+[debug] 
+[error] 
+[error] Error: Not in a Firebase app directory (could not locate firebase.json)
+[debug] [2026-08-22T12:35:12.281Z] ----------------------------------------------------------------------
+[debug] [2026-08-22T12:35:12.293Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\RAM1\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2026-08-22T12:35:12.295Z] CLI Version:   15.28.1
+[debug] [2026-08-22T12:35:12.295Z] Platform:      win32
+[debug] [2026-08-22T12:35:12.295Z] Node Version:  v25.9.0
+[debug] [2026-08-22T12:35:12.296Z] Detected Agent: open_code
+[debug] [2026-08-22T12:35:12.297Z] Time:          Sat Aug 22 2026 20:35:12 GMT+0800 (Singapore Standard Time)
+[debug] [2026-08-22T12:35:12.297Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-08-22T12:35:14.962Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-08-22T12:35:14.962Z] > authorizing via signed-in user (ashrafkrai@gmail.com)
+[debug] [2026-08-22T12:35:14.963Z] [iam] checking project masjid-attendance-pro for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-08-22T12:35:14.998Z] Checked if tokens are valid: false, expires at: 1787397028762
+[debug] [2026-08-22T12:35:14.999Z] Checked if tokens are valid: false, expires at: 1787397028762
+[debug] [2026-08-22T12:35:14.999Z] > refreshing access token with scopes: []
+[debug] [2026-08-22T12:35:15.005Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-08-22T12:35:15.005Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-08-22T12:35:15.336Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-08-22T12:35:15.337Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-08-22T12:35:15.372Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/masjid-attendance-pro:testIamPermissions [none]
+[debug] [2026-08-22T12:35:15.372Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/masjid-attendance-pro:testIamPermissions  x-goog-user-project=masjid-attendance-pro
+[debug] [2026-08-22T12:35:15.373Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/masjid-attendance-pro:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-08-22T12:35:16.521Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/masjid-attendance-pro:testIamPermissions 200
+[debug] [2026-08-22T12:35:16.522Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/masjid-attendance-pro:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-08-22T12:35:16.524Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:16.524Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:16.525Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/masjid-attendance-pro [none]
+[debug] [2026-08-22T12:35:17.034Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/masjid-attendance-pro 200
+[debug] [2026-08-22T12:35:17.035Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/masjid-attendance-pro {"projectId":"masjid-attendance-pro","projectNumber":"173958887534","displayName":"Masjid Attendance Pro","name":"projects/masjid-attendance-pro","resources":{"hostingSite":"masjid-attendance-pro","realtimeDatabaseInstance":"masjid-attendance-pro-default-rtdb"},"state":"ACTIVE","labels":{"firebase":"enabled"},"etag":"1_f2ddfe28-74f1-4206-a77a-7d3e3a988ac8"}
+[info] 
+[info] === Deploying to 'masjid-attendance-pro'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2026-08-22T12:35:17.042Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:17.042Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:17.042Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/masjid-attendance-pro/sites/masjid-attendance-pro [none]
+[debug] [2026-08-22T12:35:17.955Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/masjid-attendance-pro/sites/masjid-attendance-pro 200
+[debug] [2026-08-22T12:35:17.955Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/masjid-attendance-pro/sites/masjid-attendance-pro {"name":"projects/masjid-attendance-pro/sites/masjid-attendance-pro","defaultUrl":"https://masjid-attendance-pro.web.app","appId":"1:173958887534:web:219a7f341fc653ee304e7f","type":"DEFAULT_SITE"}
+[debug] [2026-08-22T12:35:17.959Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:17.960Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:17.960Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/masjid-attendance-pro/versions [none]
+[debug] [2026-08-22T12:35:17.960Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/masjid-attendance-pro/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2026-08-22T12:35:19.285Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/masjid-attendance-pro/versions 200
+[debug] [2026-08-22T12:35:19.285Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/masjid-attendance-pro/versions {"name":"projects/173958887534/sites/masjid-attendance-pro/versions/5c246e756a656ce5","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[masjid-attendance-pro]: beginning deploy... 
+[info] i  hosting[masjid-attendance-pro]: found 6 files in . 
+[debug] [2026-08-22T12:35:19.331Z] [hosting] uploading with 200 concurrency
+[debug] [2026-08-22T12:35:19.333Z] [hosting] hash cache [] not populated
+[debug] [2026-08-22T12:35:19.366Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:19.367Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:19.372Z] [hosting] hash cache [] stored for 6 files
+[debug] [2026-08-22T12:35:19.373Z] [hosting][hash queue][FINAL] {"max":29,"min":19,"avg":23.166666666666668,"active":0,"complete":6,"success":6,"errored":0,"retried":0,"total":6,"elapsed":38}
+[debug] [2026-08-22T12:35:19.374Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/173958887534/sites/masjid-attendance-pro/versions/5c246e756a656ce5:populateFiles [none]
+[debug] [2026-08-22T12:35:19.374Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/173958887534/sites/masjid-attendance-pro/versions/5c246e756a656ce5:populateFiles {"files":{"/supabase/schema.sql":"46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e","/supabase/supabase/functions/waktu-solat/index.ts":"46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e","/icon.svg":"fb28c3cee1b225a0b5cfd0f9fc98479833977d575466b397df25699ae5cc0185","/manifest.webmanifest":"781df79408daf074ad0b0fa25dd7f3c1785998989efd978afd867d41e4299d05","/sw.js":"5bc74348734938ae3f9d0ad22d259b9b780d56d1133a85d739736b7753e8f1e2","/index.html":"3cf4d2ed19e68df5ae2025ba7863d77825da3667bb37c866688280129ffbcbd9"}}
+[debug] [2026-08-22T12:35:20.103Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/173958887534/sites/masjid-attendance-pro/versions/5c246e756a656ce5:populateFiles 200
+[debug] [2026-08-22T12:35:20.104Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/173958887534/sites/masjid-attendance-pro/versions/5c246e756a656ce5:populateFiles {"uploadRequiredHashes":["5bc74348734938ae3f9d0ad22d259b9b780d56d1133a85d739736b7753e8f1e2","3cf4d2ed19e68df5ae2025ba7863d77825da3667bb37c866688280129ffbcbd9"],"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/masjid-attendance-pro/versions/5c246e756a656ce5/files"}
+[debug] [2026-08-22T12:35:20.105Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:20.105Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:20.106Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:20.106Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:20.107Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/masjid-attendance-pro/versions/5c246e756a656ce5/files/5bc74348734938ae3f9d0ad22d259b9b780d56d1133a85d739736b7753e8f1e2 [none]
+[debug] [2026-08-22T12:35:20.107Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/masjid-attendance-pro/versions/5c246e756a656ce5/files/5bc74348734938ae3f9d0ad22d259b9b780d56d1133a85d739736b7753e8f1e2 [stream]
+[debug] [2026-08-22T12:35:20.109Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/masjid-attendance-pro/versions/5c246e756a656ce5/files/3cf4d2ed19e68df5ae2025ba7863d77825da3667bb37c866688280129ffbcbd9 [none]
+[debug] [2026-08-22T12:35:20.110Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/masjid-attendance-pro/versions/5c246e756a656ce5/files/3cf4d2ed19e68df5ae2025ba7863d77825da3667bb37c866688280129ffbcbd9 [stream]
+[debug] [2026-08-22T12:35:20.117Z] [hosting][populate queue][FINAL] {"max":741,"min":741,"avg":741,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":752}
+[debug] [2026-08-22T12:35:20.117Z] [hosting] uploads queued: 2
+[info] i  hosting: uploading new files [0/2] (0%) 
+[debug] [2026-08-22T12:35:21.642Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/masjid-attendance-pro/versions/5c246e756a656ce5/files/3cf4d2ed19e68df5ae2025ba7863d77825da3667bb37c866688280129ffbcbd9 200
+[debug] [2026-08-22T12:35:21.643Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/masjid-attendance-pro/versions/5c246e756a656ce5/files/3cf4d2ed19e68df5ae2025ba7863d77825da3667bb37c866688280129ffbcbd9 [stream]
+[debug] [2026-08-22T12:35:21.740Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/masjid-attendance-pro/versions/5c246e756a656ce5/files/5bc74348734938ae3f9d0ad22d259b9b780d56d1133a85d739736b7753e8f1e2 200
+[debug] [2026-08-22T12:35:21.740Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/masjid-attendance-pro/versions/5c246e756a656ce5/files/5bc74348734938ae3f9d0ad22d259b9b780d56d1133a85d739736b7753e8f1e2 [stream]
+[debug] [2026-08-22T12:35:21.741Z] [hosting][upload queue][FINAL] {"max":1636,"min":1538,"avg":1587,"active":0,"complete":2,"success":2,"errored":0,"retried":0,"total":2,"elapsed":1636}
+[info] i  hosting: upload complete 
+[info] +  hosting[masjid-attendance-pro]: file upload complete 
+[debug] [2026-08-22T12:35:21.741Z] [hosting] deploy completed after 2449ms
+[debug] [2026-08-22T12:35:21.743Z] [
+  {
+    "config": {
+      "public": ".",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**",
+        "functions/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "site": "masjid-attendance-pro"
+    },
+    "version": "projects/173958887534/sites/masjid-attendance-pro/versions/5c246e756a656ce5"
+  }
+]
+[info] i  hosting[masjid-attendance-pro]: finalizing version... 
+[debug] [2026-08-22T12:35:21.750Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:21.750Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:21.751Z] >>> [apiv2][query] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/masjid-attendance-pro/versions/5c246e756a656ce5 updateMask=status%2Cconfig
+[debug] [2026-08-22T12:35:21.752Z] >>> [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/masjid-attendance-pro/versions/5c246e756a656ce5 {"status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]}}
+[debug] [2026-08-22T12:35:22.867Z] <<< [apiv2][status] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/masjid-attendance-pro/versions/5c246e756a656ce5 200
+[debug] [2026-08-22T12:35:22.867Z] <<< [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/masjid-attendance-pro/versions/5c246e756a656ce5 {"name":"projects/173958887534/sites/masjid-attendance-pro/versions/5c246e756a656ce5","status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-08-22T12:35:19.032486Z","createUser":{"email":"ashrafkrai@gmail.com"},"finalizeTime":"2026-08-22T12:35:23.316937Z","finalizeUser":{"email":"ashrafkrai@gmail.com"}}
+[debug] [2026-08-22T12:35:22.867Z] [hosting] finalized version for masjid-attendance-pro:[object Object]
+[info] +  hosting[masjid-attendance-pro]: version finalized 
+[info] i  hosting[masjid-attendance-pro]: releasing new version... 
+[debug] [2026-08-22T12:35:22.868Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:22.869Z] Checked if tokens are valid: true, expires at: 1787405714337
+[debug] [2026-08-22T12:35:22.869Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/masjid-attendance-pro/channels/live/releases versionName=projects%2F173958887534%2Fsites%2Fmasjid-attendance-pro%2Fversions%2F5c246e756a656ce5
+[debug] [2026-08-22T12:35:22.870Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/masjid-attendance-pro/channels/live/releases {}
+[debug] [2026-08-22T12:35:23.896Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/masjid-attendance-pro/channels/live/releases 200
