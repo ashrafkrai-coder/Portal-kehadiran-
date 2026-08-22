@@ -1,0 +1,46 @@
+const to12 = (value) => {
+  if (!value) return value;
+  const match = String(value).trim().match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(am|pm)?$/i);
+  if (!match) return value;
+  let hour = Number(match[1]);
+  const minute = match[2];
+  const period = (match[4] || '').toLowerCase();
+  if (period === 'pm' && hour < 12) hour += 12;
+  if (period === 'am' && hour === 12) hour = 0;
+  const suffix = hour >= 12 ? 'PM' : 'AM';
+  const displayHour = String(((hour + 11) % 12) + 1).padStart(2, '0');
+  return `${displayHour}:${minute} ${suffix}`;
+};
+
+const convertPrayerTimes = (payload) => {
+  const timeKeys = ['fajr', 'syuruk', 'dhuhr', 'asr', 'maghrib', 'isha'];
+  const convertRow = (row) => {
+    if (!row || typeof row !== 'object') return row;
+    const next = { ...row };
+    for (const key of timeKeys) {
+      if (key in next) next[key] = to12(next[key]);
+    }
+    return next;
+  };
+
+  if (Array.isArray(payload?.data)) {
+    payload.data = payload.data.map(convertRow);
+  }
+  if (Array.isArray(payload?.prayerTime)) {
+    payload.prayerTime = payload.prayerTime.map(convertRow);
+  }
+  return payload;
+};
+
+export default async function handler(req, res) {
+  const zon = req.query.zon || 'SGR01';
+  try {
+    const r = await fetch(`https://api.e-solat.gov.my/index.php?r=clim/prayerTimes&zone=${encodeURIComponent(zon)}`);
+    const j = convertPrayerTimes(await r.json());
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(j);
+  } catch (e) {
+    res.status(500).json({ error: 'gagal' });
+  }
+}
