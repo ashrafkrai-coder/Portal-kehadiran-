@@ -230,6 +230,17 @@ th{background:#efe9db}
     </div>
     <div class="tajuk">Senarai Staff</div><div id="senaraiStaff"></div>
     <div class="kad" style="padding:16px;margin-top:12px">
+      <div class="tajuk">🔑 Clock In Manual Imam/Bilal (Admin)</div>
+      <p class="muktamad" style="margin-bottom:10px">Gunakan jika Imam/Bilal terlupa clock in. Pilih staff, waktu solat, dan masa.</p>
+      <label for="manualStaff">Pilih Imam/Bilal</label>
+      <select id="manualStaff" aria-label="Pilih Imam atau Bilal"><option value="">-- Pilih --</option></select>
+      <label for="manualWaktu">Waktu Solat</label>
+      <select id="manualWaktu" aria-label="Pilih Waktu Solat"><option value="">-- Pilih --</option><option>Subuh</option><option>Zohor</option><option>Asar</option><option>Maghrib</option><option>Isyak</option></select>
+      <label for="manualMasa">Masa Clock In (format 12h, cth: 05:45 AM)</label>
+      <input type="text" id="manualMasa" placeholder="Cth: 05:45 AM" aria-label="Masa Clock In">
+      <button type="button" class="btn2" id="btnManualClockIn" style="margin-top:8px">✅ Simpan Clock In Manual</button>
+    </div>
+    <div class="kad" style="padding:16px;margin-top:12px">
       <div class="tajuk">Tetapan Sistem & Geofencing</div>
       <label for="tLat">Latitud Pejabat/Masjid</label><input id="tLat" type="number" step="any" min="-90" max="90" aria-label="Latitud">
       <label for="tLng">Longitud</label><input id="tLng" type="number" step="any" min="-180" max="180" aria-label="Longitud">
@@ -508,9 +519,20 @@ $('#btnOut').onclick=async()=>{
 };
 
 /* ============ 8. CLOCK IN IMAM/BILAL ============ */
+function statusWaktuSolat(waktu){
+  const tM=toMin(waktuSolat[waktu]||'00:00');
+  const nowMin=toMin(masaKini());
+  const sebelum=tM-30;
+  if(nowMin<sebelum)return 'belum';
+  if(nowMin>=sebelum&&nowMin<tM+tetapan.durasiSolat)return 'boleh';
+  return 'tutup';
+}
 async function clockInSolat(waktu){
  const s=staffPilih();if(!s||(s.jawatan!=='Imam'&&s.jawatan!=='Bilal'))return toast('❌ Pilih profil Imam/Bilal');
  if(log.some(l=>l.staffId===s.id&&l.waktu===waktu&&l.tarikh===hariIni()))return toast('⚠️ Sudah direkod untuk '+waktu);
+ const st=statusWaktuSolat(waktu);
+ if(st==='belum')return toast('⏳ Belum masuk waktu '+waktu);
+ if(st==='tutup')return toast('❌ Waktu '+waktu+' sudah ditutup');
  let kaedah='hp',gps='Zon Masjid';
  if(!modTablet()){const g=await semakGPS();if(!g.ok)return toast(`❌ Luar zon masjid (${Math.round(g.jarak)}m)`)}
  else{kaedah='tablet';gps='Tablet Kiosk'}
@@ -607,16 +629,21 @@ function renderSolat(){
  let html=`<div class="tajuk">🕌 Tugasan Waktu Solat — ${s.jawatan}</div>
  <div class="scard"><div style="display:flex;gap:10px;align-items:center"><img src="${s.img||avatar(s.nama)}" style="width:52px;height:52px;border-radius:50%"><div><b>${s.nama}</b><br><span class="st">${s.jawatan}</span></div></div>
  <span class="badge-zon">📍 ${tetapan.radius}m</span></div>`;
- for(const w of ['Subuh','Zohor','Asar','Maghrib','Isyak']){
-  const rec=log.find(l=>l.staffId===s.id&&l.tarikh===today&&l.waktu===w);
-  const tM=toMin(waktuSolat[w]||'00:00'),dalamWindow=nowMin>=tM&&nowMin<tM+tetapan.durasiSolat;
-  let kanan='';
-  if(rec){kanan=`<div class="st">✅ Hadir ${to12(rec.masaIn)}${rec.masaOut?' → '+to12(rec.masaOut):''}</div>`}
-  else if(dalamWindow){kanan=`<button class="btn2" style="width:auto;padding:9px 16px" data-w="${w}">Clock In</button>`}
-  else if(nowMin>=tM+tetapan.durasiSolat){kanan=`<span class="st" style="color:#b91c1c;font-weight:700">❌ Tidak Hadir</span>`}
-  else{kanan=`<span class="st">⏳ ${to12(waktuSolat[w])}</span>`}
-  html+=`<div class="scard"><b>${w}</b>${kanan}</div>`;
- }
+for(const w of ['Subuh','Zohor','Asar','Maghrib','Isyak']){
+   const rec=log.find(l=>l.staffId===s.id&&l.tarikh===today&&l.waktu===w);
+   const st=statusWaktuSolat(w),dalamWindow=st==='boleh';
+   const tM=toMin(waktuSolat[w]||'00:00');
+   const sebelumWindow=st==='boleh'&&nowMin<tM;
+   let kanan='';
+   if(rec){kanan=`<div class="st">✅ Hadir ${to12(rec.masaIn)}${rec.masaOut?' → '+to12(rec.masaOut):''}</div>`}
+   else if(dalamWindow){
+    if(sebelumWindow){kanan=`<button class="btn2" style="width:auto;padding:9px 16px" data-w="${w}">Clock In (30 min sebelum)</button>`}
+    else{kanan=`<button class="btn2" style="width:auto;padding:9px 16px" data-w="${w}">Clock In</button>`}
+   }
+   else if(st==='belum'){kanan=`<span class="st">⏳ ${to12(waktuSolat[w])}</span>`}
+   else{kanan=`<span class="st" style="color:#b91c1c;font-weight:700">❌ Tidak Hadir</span>`}
+   html+=`<div class="scard"><b>${w}</b>${kanan}</div>`;
+  }
  html+=`<div class="elaun-kad">Elaun Hari Ini: <b>RM ${recHari*kadar}</b> (${recHari} × RM ${kadar})<br>Jumlah Bulanan: <b>RM ${recBulan*kadar}</b> / ${recBulan} waktu</div>`;
  box.innerHTML=html;
  box.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>clockInSolat(b.dataset.w));
@@ -683,7 +710,7 @@ function isiTetapan(){
 }
 
 /* ============ 10. ADMIN ============ */
-$('#btnPin').onclick=()=>{if($('#pinInput').value===tetapan.pin){$('#pinGate').hidden=true;$('#adminBody').hidden=false;isiTetapan();renderSenaraiStaff();renderMasjid();$('#tNamaMasjid').value=tetapan.namaMasjid||'';$('#tAlamat').value=tetapan.alamat||''}else toast('❌ PIN salah')};
+$('#btnPin').onclick=()=>{if($('#pinInput').value===tetapan.pin){$('#pinGate').hidden=true;$('#adminBody').hidden=false;isiTetapan();renderSenaraiStaff();renderMasjid();isiManualStaff();$('#tNamaMasjid').value=tetapan.namaMasjid||'';$('#tAlamat').value=tetapan.alamat||''}else toast('❌ PIN salah')};
 $('#btnLock').onclick=()=>{$('#pinGate').hidden=false;$('#adminBody').hidden=true};
 $('#avatarUp').onclick=()=>$('#fileGambar').click();
 function handleAvatar(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=128;c.height=128*img.height/img.width;c.getContext('2d').drawImage(img,0,0,c.width,c.height);imgData=c.toDataURL('image/jpeg',.8);$('#avatarUp').innerHTML=`<img src="${imgData}">`+'<input type="file" id="fileGambar" accept="image/*" hidden>';$('#avatarUp').onclick=()=>$('#fileGambar').click();$('#fileGambar').onchange=handleAvatar};img.src=ev.target.result};r.readAsDataURL(f)}
@@ -714,6 +741,26 @@ $('#btnSimpanTetapan').onclick=async()=>{
  await simpanTetapanFB();muatWaktu();isiTetapan();toast('✅ Tetapan disimpan');
 };
 $('#btnTablet').onclick=()=>{localStorage.getItem('pk_tablet')==='1'?localStorage.removeItem('pk_tablet'):localStorage.setItem('pk_tablet','1');isiTetapan();semakSesi();renderProfil();toast('✅ Mod peranti dikemas kini')};
+
+function isiManualStaff(){
+  const ib=staff.filter(s=>s.jawatan==='Imam'||s.jawatan==='Bilal');
+  $('#manualStaff').innerHTML='<option value="">-- Pilih --</option>'+ib.map(s=>`<option value="${s.id}">${s.nama} (${s.jawatan})</option>`).join('');
+}
+$('#btnManualClockIn').onclick=async()=>{
+  const staffId=$('#manualStaff').value;
+  const waktu=$('#manualWaktu').value;
+  const masaInput=$('#manualMasa').value.trim();
+  if(!staffId||!waktu||!masaInput)return toast('❌ Lengkapkan semua medan');
+  const s=staff.find(x=>x.id===staffId);
+  if(!s)return toast('❌ Staff tidak dijumpai');
+  if(s.jawatan!=='Imam'&&s.jawatan!=='Bilal')return toast('❌ Hanya untuk Imam/Bilal');
+  if(log.some(l=>l.staffId===staffId&&l.waktu===waktu&&l.tarikh===hariIni()))return toast('⚠️ Sudah direkod untuk '+waktu);
+  const masa24=to24(masaInput);
+  if(!masa24||masa24===masaInput)return toast('❌ Format masa tidak sah (cth: 05:45 AM)');
+  await tambahKehadiran({staffId:s.id,nama:s.nama,jawatan:s.jawatan,tarikh:hariIni(),masaIn:masaInput,open:true,kaedah:'admin',gps:'Admin Manual',masaOut:null,statusOut:null,waktu});
+  $('#manualStaff').value='';$('#manualWaktu').value='';$('#manualMasa').value='';
+  renderLog();renderSolat();renderSenaraiStaff();toast('✅ Clock In manual berjaya — '+s.nama+' ('+waktu+')');
+};
 
 /* ============ 11. PDF DENGAN LOGO MASJID ============ */
 function eksportPDF(peribadi){
