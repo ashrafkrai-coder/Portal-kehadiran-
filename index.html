@@ -33,6 +33,10 @@ header{background:linear-gradient(140deg,#04382c,#065f46 55%,#0a8f5b);color:#fff
 .kad-header h1{font-size:15px;line-height:1.2}
 .kad-header h2{font-size:13px;color:var(--hijau);font-weight:700;margin-top:2px}
 .kad-header p{font-size:11px;color:#6b7280;margin-top:2px}
+.login-trigger{border:none;border-radius:999px;background:linear-gradient(135deg,#065f46,#059669);color:#fff;font-weight:800;font-size:12px;padding:10px 14px;cursor:pointer;box-shadow:0 8px 18px rgba(5,150,105,.18);white-space:nowrap}
+.login-trigger:active{transform:scale(.98)}
+.login-cta{margin-top:10px;display:flex;justify-content:center}
+.login-cta .login-trigger{width:auto;min-width:140px}
 .screen{display:none;padding:14px}.screen.active{display:block}
 .grid-profil.blok{display:block}
 .grid-profil{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
@@ -127,6 +131,7 @@ th{background:#efe9db}
     <h2 id="taglineHeader">Pengurusan Pintar Imam, Bilal & Kakitangan</h2>
     <p id="tarikhLine">…</p>
   </div>
+  <button type="button" class="login-trigger" id="btnOpenLogin">Masuk</button>
 </div>
 
 <!-- UTAMA -->
@@ -531,6 +536,12 @@ function renderMasjid(){
  $('#logoLogin').innerHTML=logoHTML;
  renderMasjidPreview();
 }
+function renderLoginButton(){
+ const btn=$('#btnOpenLogin');
+ if(!btn)return;
+ const validSession=!!(sesi&&staff.some(s=>s.id===sesi));
+ btn.textContent=validSession?'Tukar Akaun':'Masuk';
+}
 function renderMasjidPreview(){
  const preview=$('#logoPreview');
  if(!preview)return;
@@ -545,6 +556,7 @@ function handleLogo(e){
 }
 function renderProfil(){
  const box=$('#gridProfil');
+ renderLoginButton();
  if(modTablet()){
   box.style.display='grid';
   box.innerHTML=staff.map(s=>`<div class="profil ${pilih===s.id?'pilih':''}" data-id="${s.id}">
@@ -552,7 +564,17 @@ function renderProfil(){
   box.querySelectorAll('.profil').forEach(el=>el.onclick=()=>{pilih=el.dataset.id;LS.set('pk_pilih',pilih);renderProfil();renderSolat()});
  }else{
   box.style.display='block';
-  const s=staff.find(x=>x.id===sesi);if(!s){box.innerHTML='';return}
+  const s=staff.find(x=>x.id===sesi);
+  if(!s){
+   box.innerHTML=`<div class="kad" style="padding:16px;text-align:center">
+    <div class="tajuk">Belum log masuk</div>
+    <p class="muktamad" style="margin-bottom:10px">Klik butang di bawah untuk masuk sebagai staff atau admin.</p>
+    <button type="button" class="login-trigger" id="btnOpenLoginCard">Buka Login</button>
+   </div>`;
+   const btn=$('#btnOpenLoginCard');
+   if(btn)btn.onclick=()=>bukaLogin('staff');
+   return;
+  }
   box.innerHTML=`<div class="kad" style="padding:14px;display:flex;gap:12px;align-items:center">
    <img src="${s.img||avatar(s.nama)}" style="width:62px;height:62px;border-radius:50%;border:3px solid #34d399;object-fit:cover">
    <div style="flex:1"><div style="font-size:14px;font-weight:700">${s.nama}</div><div style="font-size:11px;color:#6b7280">${s.jawatan} • ID: ${s.id}</div></div>
@@ -800,13 +822,19 @@ function setEntryMode(mode){
   $('#loginScreen').classList.remove('mode-admin');
  }
 }
+function bukaLogin(mode='staff'){
+ setEntryMode(mode);
+ $('#loginScreen').style.display='flex';
+ renderLogin();
+}
 function renderLogin(){
  $('#loginId').innerHTML=staff.map(s=>`<option value="${s.id}">${s.nama} (${s.id}) — ${s.jawatan}</option>`).join('')||'<option value="">Tiada staff berdaftar</option>';
 }
 function semakSesi(){
  if(modTablet()){$('#loginScreen').style.display='none';return}
  if(sesi&&staff.some(s=>s.id===sesi)){pilih=sesi;LS.set('pk_pilih',pilih);$('#loginScreen').style.display='none'}
- else{$('#loginScreen').style.display='flex';setEntryMode(entryMode);renderLogin()}
+ else{$('#loginScreen').style.display='none';setEntryMode('staff')}
+ renderLoginButton();
 }
 $('#btnLogin').onclick=()=>{
  const s=staff.find(x=>x.id===$('#loginId').value);
@@ -815,9 +843,9 @@ $('#btnLogin').onclick=()=>{
  sesi=s.id;localStorage.setItem('pk_sesi',sesi);
  masuk();
 };
+$('#btnOpenLogin').onclick=()=>bukaLogin('staff');
 $('#btnAdminShortcut').onclick=()=>{
- $('#loginScreen').style.display='flex';
- setEntryMode('admin');
+ bukaLogin('admin');
  tukarTab('admin');
  toast('🔐 Buka kunci admin untuk teruskan');
 };
@@ -826,8 +854,7 @@ $('#btnModeStaff').onclick=()=>{
  tukarTab('utama');
 };
 $('#btnModeAdmin').onclick=()=>{
- $('#loginScreen').style.display='flex';
- setEntryMode('admin');
+ bukaLogin('admin');
  tukarTab('admin');
 };
 $('#btnBackToStaff').onclick=()=>{
@@ -835,18 +862,18 @@ $('#btnBackToStaff').onclick=()=>{
  tukarTab('utama');
 };
 $('#btnOpenAdminTab').onclick=()=>{
- $('#loginScreen').style.display='flex';
- setEntryMode('admin');
+ bukaLogin('admin');
  tukarTab('admin');
 };
 function masuk(){
  const s=staff.find(x=>x.id===sesi);
  $('#loginScreen').style.display='none';
+ renderLoginButton();
  renderProfil();renderLog();renderLaporan();
  tukarTab(s&&s.jawatan!=='Staff'?'solat':'utama');
  toast('👋 Selamat datang, '+s.nama);
 }
-function keluar(){sesi=null;localStorage.removeItem('pk_sesi');pilih=null;LS.set('pk_pilih',null);$('#loginPin').value='';semakSesi();renderProfil()}
+function keluar(){sesi=null;localStorage.removeItem('pk_sesi');pilih=null;LS.set('pk_pilih',null);$('#loginPin').value='';semakSesi();renderLoginButton();renderProfil()}
 function tukarTab(t){
  document.querySelectorAll('#tabbar button').forEach(x=>x.classList.toggle('aktif',x.dataset.tab===t));
  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
