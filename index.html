@@ -750,18 +750,13 @@ function eksportPDF(peribadi){
  const alamat=tetapan.alamat||'';
  doc.setFillColor(HIJAU[0],HIJAU[1],HIJAU[2]);doc.rect(0,0,210,38,'F');
  doc.setFillColor(EMAS[0],EMAS[1],EMAS[2]);doc.rect(0,38,210,2,'F');
-  if(tetapan.logoMasjid){
-   try{
-    doc.setFillColor(HIJAU[0],HIJAU[1],HIJAU[2]);doc.circle(22,19,10,'F');
-    doc.setDrawColor(EMAS[0],EMAS[1],EMAS[2]);doc.setLineWidth(2);doc.circle(22,19,10,'S');
-    doc.saveGraphicsState();
-    doc.circle(22,19,9).clip().discardPath();
-    doc.addImage(tetapan.logoMasjid,'JPEG',14,11,16,16);
-    doc.restoreGraphicsState();
-   }catch(e){}
-  }
+   if(tetapan.logoMasjid){
+    try{
+     doc.addImage(tetapan.logoMasjid,'JPEG',14,6,26,26);
+    }catch(e){}
+   }
  doc.setTextColor(255,255,255);
- const xText=tetapan.logoMasjid?40:105;
+  const xText=tetapan.logoMasjid?46:105;
  const align=tetapan.logoMasjid?'left':'center';
  doc.setFont('helvetica','bold');doc.setFontSize(14);
  doc.text(namaMasjid.toUpperCase(),xText,14,{align});
