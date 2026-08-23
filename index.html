@@ -543,9 +543,9 @@ function renderProfil(){
  const box=$('#gridProfil');
  renderLoginButton();
  if(modTablet()){
-  box.style.display='grid';
-  box.innerHTML=staff.map(s=>`<div class="profil ${pilih===s.id?'pilih':''}" data-id="${s.id}">
-   <img src="${s.img||avatar(s.nama)}"><div class="nm">${s.nama}</div><div class="jw">- ${s.jawatan}</div></div>`).join('');
+box.style.display='grid';
+   box.innerHTML=staff.map(s=>`<div class="profil ${pilih===s.id?'pilih':''}" data-id="${s.id}">
+    <img src="${s.img||avatar(s.nama)}"><div class="nm">${s.nama}</div><div class="jw">ID: ${s.id}</div><div class="jw">${s.jawatan}</div></div>`).join('');
   box.querySelectorAll('.profil').forEach(el=>el.onclick=()=>{pilih=el.dataset.id;LS.set('pk_pilih',pilih);renderProfil();renderSolat()});
  }else{
   box.style.display='block';
@@ -554,10 +554,10 @@ function renderProfil(){
     box.innerHTML='';
     return;
    }
-  box.innerHTML=`<div class="kad" style="padding:14px;display:flex;gap:12px;align-items:center">
-   <img src="${s.img||avatar(s.nama)}" style="width:62px;height:62px;border-radius:50%;border:3px solid #34d399;object-fit:cover">
-   <div style="flex:1"><div style="font-size:14px;font-weight:700">${s.nama}</div><div style="font-size:11px;color:#6b7280">${s.jawatan} • ID: ${s.id}</div></div>
-   <button id="btnLogout" style="background:#fee2e2;color:#b91c1c;border:none;border-radius:10px;padding:8px 12px;font-weight:700">Keluar</button></div>`;
+box.innerHTML=`<div class="kad" style="padding:14px;display:flex;gap:12px;align-items:center">
+    <img src="${s.img||avatar(s.nama)}" style="width:62px;height:62px;border-radius:50%;border:3px solid #34d399;object-fit:cover">
+    <div style="flex:1"><div style="font-size:14px;font-weight:700">${s.nama}</div><div style="font-size:11px;color:#6b7280">ID: ${s.id}</div><div style="font-size:11px;color:#6b7280">${s.jawatan}</div></div>
+    <button id="btnLogout" style="background:#fee2e2;color:#b91c1c;border:none;border-radius:10px;padding:8px 12px;font-weight:700">Keluar</button></div>`;
   $('#btnLogout').onclick=keluar;
  }
 }
