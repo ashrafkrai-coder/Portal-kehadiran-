@@ -608,7 +608,7 @@ for(const w of ['Subuh','Zohor','Asar','Maghrib','Isyak']){
     else{kanan=`<button class="btn2" style="width:auto;padding:9px 16px" data-w="${w}">Clock In</button>`}
    }
    else if(st==='belum'){kanan=`<span class="st">⏳ ${to12(waktuSolat[w])}</span>`}
-   else{kanan=`<span class="st" style="color:#b91c1c;font-weight:700">❌ Tidak Hadir</span>`}
+    else{kanan=`<span class="st" style="color:#b91c1c;font-weight:700">❌ Tidak Bertugas</span>`}
    html+=`<div class="scard"><b>${w}</b>${kanan}</div>`;
   }
  html+=`<div class="elaun-kad">Elaun Hari Ini: <b>RM ${recHari*kadar}</b> (${recHari} × RM ${kadar})<br>Jumlah Bulanan: <b>RM ${recBulan*kadar}</b> / ${recBulan} waktu</div>`;
