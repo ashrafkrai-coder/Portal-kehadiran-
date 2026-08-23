@@ -846,13 +846,16 @@ $('#btnLogin').onclick=()=>{
 };
 /* handler mod lama dibuang — log masuk bersatu untuk staff & admin */
 function masuk(){
- const s=staff.find(x=>x.id===sesi);
- const panel=$('#loginPanel');
- if(panel)panel.hidden=true;
- renderLoginButton();
- renderProfil();renderLog();renderLaporan();
-  tukarTab(s&&solatRole(s.jawatan)?'solat':'utama');
- toast('👋 Selamat datang, '+s.nama);
+  const s=staff.find(x=>x.id===sesi);
+  const panel=$('#loginPanel');
+  if(panel)panel.hidden=true;
+  renderLoginButton();
+  renderProfil();renderLog();renderLaporan();
+  if(s && solatRole(s.jawatan)){
+    pilih=sesi;LS.set('pk_pilih',pilih);
+  }
+  tukarTab(s && solatRole(s.jawatan) ? 'solat' : 'utama');
+  toast('👋 Selamat datang, '+s.nama);
 }
 function keluar(){sesi=null;localStorage.removeItem('pk_sesi');pilih=null;LS.set('pk_pilih',null);$('#loginPin').value='';semakSesi();renderLoginButton();renderProfil()}
 function tukarTab(t){
