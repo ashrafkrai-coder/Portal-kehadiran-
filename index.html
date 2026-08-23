@@ -223,7 +223,7 @@ th{background:#efe9db}
       <label for="fNama">Nama Penuh</label><input id="fNama" placeholder="Cth: Ahmad bin Ali" aria-label="Nama Penuh Staff">
       <label for="fId">ID Staff</label><input id="fId" placeholder="Cth: S004" aria-label="ID Staff">
       <label for="fJawatan">Jawatan</label>
-      <select id="fJawatan" aria-label="Jawatan Staff"><option value="">Pilih Jawatan</option><option>Imam</option><option>Bilal</option><option>Staff</option></select>
+      <select id="fJawatan" aria-label="Jawatan Staff"><option value="">Pilih Jawatan</option><option>Imam</option><option>Bilal</option><option>Staff</option><option>Siak</option><option>Pengawal</option></select>
       <label for="fPin">PIN Login Staff (kosong = 1234)</label><input id="fPin" inputmode="numeric" placeholder="1234" autocomplete="off" aria-label="PIN Staff">
       <button type="button" class="btn2" id="btnSimpanStaff">Simpan Profil</button>
       <button type="button" class="btn2 merah" id="btnBatalEdit" style="margin-top:6px;display:none">Batal Edit</button>
@@ -503,7 +503,7 @@ function semakGPS(){return new Promise(res=>{
 const staffPilih=()=>staff.find(s=>s.id===pilih);
 $('#btnIn').onclick=async()=>{
  const s=staffPilih();if(!s)return toast('❌ Sila pilih profil staff dahulu');
- if(s.jawatan!=='Staff')return toast('🕌 Imam/Bilal: sila guna tab SOLAT');
+  if(solatRole(s.jawatan))return toast('🕌 Imam/Bilal: sila guna tab SOLAT');
  if(log.some(l=>l.staffId===s.id&&l.open&&l.tarikh===hariIni()))return toast('⚠️ Sesi hari ini masih terbuka');
  let kaedah='hp',gps='GPS Disahkan';
  if(!modTablet()){const g=await semakGPS();if(!g.ok)return toast(`❌ Luar zon pejabat (${Math.round(g.jarak)}m)`)}
@@ -616,7 +616,7 @@ function renderLog(){
 function renderSolat(){
  const s=staffPilih();const box=$('#kadSolat');
  const ib=staff.filter(x=>x.jawatan==='Imam'||x.jawatan==='Bilal');
- if(!s||s.jawatan==='Staff'){
+  if(!s||!solatRole(s.jawatan)){
   box.innerHTML=`<div class="tajuk">🕌 Tugasan Waktu Solat — Imam & Bilal</div><p class="muktamad" style="margin-bottom:10px">Sila pilih profil Imam/Bilal:</p>`+
    ib.map(x=>`<div class="scard" data-p="${x.id}" style="cursor:pointer"><b>${x.nama}</b><span class="st">${x.jawatan}</span></div>`).join('');
   box.querySelectorAll('[data-p]').forEach(el=>el.onclick=()=>{pilih=el.dataset.p;LS.set('pk_pilih',pilih);renderProfil();renderSolat()});
@@ -649,6 +649,7 @@ for(const w of ['Subuh','Zohor','Asar','Maghrib','Isyak']){
  box.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>clockInSolat(b.dataset.w));
 }
 const kadar=s=>s.jawatan==='Imam'?tetapan.kadarImam:tetapan.kadarBilal;
+const solatRole=j=>j==='Imam'||j==='Bilal';
 function renderLaporan(){
  const bln=$('#bulanPilih').value||bulanKini();
  const hariBulan=bln===bulanKini()?+hariIni().slice(8):[31,28,31,30,31,30,31,31,30,31,30,31][+bln.slice(5)-1];
@@ -656,10 +657,10 @@ function renderLaporan(){
  const namaB=new Intl.DateTimeFormat('ms-MY',{month:'long',year:'numeric'}).format(new Date(bln+'-15'));
  if(!modTablet()){
   const s=staff.find(x=>x.id===sesi);if(!s){$('#laporan').innerHTML='';return}
-  const rec=log.filter(l=>l.staffId===s.id&&l.tarikh.startsWith(bln));
-  let isi='';
-  if(s.jawatan==='Staff'){
-   const hari=new Set(rec.filter(r=>r.masaIn).map(r=>r.tarikh)).size;
+   const rec=log.filter(l=>l.staffId===s.id&&l.tarikh.startsWith(bln));
+   let isi='';
+   if(!solatRole(s.jawatan)){
+    const hari=new Set(rec.filter(r=>r.masaIn).map(r=>r.tarikh)).size;
    isi=`<div style="font-size:34px;font-weight:800;color:var(--hijau2)">${hari} hari</div><div class="muktamad">Jumlah hari hadir</div><div class="bar" style="margin-top:10px"><i style="width:${Math.min(100,hari/hariBulan*100)}%"></i></div>`;
   }else{
    const w=rec.filter(r=>r.waktu).length;
@@ -671,9 +672,9 @@ function renderLaporan(){
  let html='<table><tr><th>Nama</th><th>Jawatan</th><th>Kehadiran</th><th>Elaun (RM)</th></tr>';
  for(const s of staff){
   const rec=log.filter(l=>l.staffId===s.id&&l.tarikh.startsWith(bln));
-  if(s.jawatan==='Staff'){
-   const hari=new Set(rec.filter(r=>r.masaIn).map(r=>r.tarikh)).size;
-   html+=`<tr><td>${s.nama}</td><td>Staff</td><td>${hari} hari<div class="bar"><i style="width:${Math.min(100,hari/hariBulan*100)}%"></i></div></td><td>—</td></tr>`;
+   if(!solatRole(s.jawatan)){
+    const hari=new Set(rec.filter(r=>r.masaIn).map(r=>r.tarikh)).size;
+    html+=`<tr><td>${s.nama}</td><td>${s.jawatan}</td><td>${hari} hari<div class="bar"><i style="width:${Math.min(100,hari/hariBulan*100)}%"></i></div></td><td>—</td></tr>`;
   }else{
    const w=rec.filter(r=>r.waktu).length;
    html+=`<tr><td>${s.nama}</td><td>${s.jawatan}</td><td>${w}/${jangkaSolat} waktu<div class="bar"><i style="width:${Math.min(100,w/jangkaSolat*100)}%"></i></div></td><td><b>RM ${w*kadar(s)}</b></td></tr>`;
@@ -797,7 +798,7 @@ function eksportPDF(peribadi){
  doc.text((peribadi?'Laporan Peribadi — ':'Laporan Kehadiran Bulanan — ')+namaBulan,xText,31,{align});
  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(90,90,90);
  doc.text('Dijana: '+new Date().toLocaleString('ms-MY')+' • Zon JAKIM: '+tetapan.zon,14,45);
- const imamBilal=staffScope.filter(s=>s.jawatan!=='Staff');
+  const imamBilal=staffScope.filter(s=>solatRole(s.jawatan));
  const kiraW=s=>log.filter(l=>l.staffId===s.id&&l.tarikh.startsWith(bln)&&l.waktu).length;
   const bodyIB=imamBilal.map(s=>{const w=kiraW(s);return [s.nama,s.jawatan,w+' / '+jangkaSolat+' waktu',Math.min(100,Math.round(w/jangkaSolat*100))+'%','RM '+(w*kadar(s))]});
   const jumlahElaun=imamBilal.reduce((a,s)=>a+kiraW(s)*kadar(s),0);
@@ -806,9 +807,9 @@ function eksportPDF(peribadi){
   foot:imamBilal.length?[['','','','JUMLAH','RM '+jumlahElaun]]:undefined,
   headStyles:{fillColor:HIJAU,textColor:255,fontSize:9},footStyles:{fillColor:EMAS,textColor:40,fontSize:9},
   alternateRowStyles:{fillColor:KRIM},styles:{fontSize:9,cellPadding:2.6,textColor:40}});
- const staffB=staffScope.filter(s=>s.jawatan==='Staff');
- if(staffB.length){
-  const bodySB=staffB.map(s=>{const hari=new Set(log.filter(l=>l.staffId===s.id&&l.tarikh.startsWith(bln)&&l.masaIn).map(l=>l.tarikh)).size;return [s.nama,'Staff Biasa',hari+' hari',Math.min(100,Math.round(hari/hariBulan*100))+'%']});
+  const staffB=staffScope.filter(s=>!solatRole(s.jawatan));
+  if(staffB.length){
+   const bodySB=staffB.map(s=>{const hari=new Set(log.filter(l=>l.staffId===s.id&&l.tarikh.startsWith(bln)&&l.masaIn).map(l=>l.tarikh)).size;return [s.nama,s.jawatan,hari+' hari',Math.min(100,Math.round(hari/hariBulan*100))+'%']});
   doc.autoTable({startY:doc.lastAutoTable.finalY+6,head:[['Nama','Jawatan','Jumlah Hari Hadir','Peratus']],
    body:bodySB,headStyles:{fillColor:HIJAU,textColor:255,fontSize:9},
    alternateRowStyles:{fillColor:KRIM},styles:{fontSize:9,cellPadding:2.6,textColor:40}});
@@ -914,7 +915,7 @@ function masuk(){
  if(panel)panel.hidden=true;
  renderLoginButton();
  renderProfil();renderLog();renderLaporan();
- tukarTab(s&&s.jawatan!=='Staff'?'solat':'utama');
+  tukarTab(s&&solatRole(s.jawatan)?'solat':'utama');
  toast('👋 Selamat datang, '+s.nama);
 }
 function keluar(){sesi=null;localStorage.removeItem('pk_sesi');pilih=null;LS.set('pk_pilih',null);$('#loginPin').value='';semakSesi();renderLoginButton();renderProfil()}
