@@ -371,7 +371,7 @@ async function initFB(){
    .subscribe();
   window.addEventListener('online',()=>{toast('🟢 Kembali online — data disync');flushQueue()});
   window.addEventListener('offline',()=>toast('📴 Luar talian — rekod disimpan dalam peranti'));
- }catch(e){console.error('Supabase init error:',e);toast('❌ Gagal sambung ke Supabase');}
+  }catch(e){toast('❌ Gagal sambung ke Supabase');}
 }
 async function muatSemua(){
  try{
@@ -383,11 +383,11 @@ async function muatSemua(){
   if(k.data)log=k.data.map(fromRow);
   if(t.data&&t.data.data)tetapan={...tetapan,...t.data.data};
   renderMasjid();
- }catch(e){console.error('muatSemua error:',e);toast('❌ Gagal memuat data');}
+  }catch(e){toast('❌ Gagal memuat data');}
 }
-async function muatStaff(){try{const r=await fb.from('staff').select('*').order('id');if(r.data){staff=r.data;renderLogin();semakSesi();renderProfil();renderSolat();renderSenaraiStaff()}}catch(e){console.error('muatStaff error:',e)}}
-async function muatKehadiran(){try{const r=await fb.from('kehadiran').select('*').order('ts',{ascending:false});if(r.data){log=r.data.map(fromRow);renderLog();renderSolat();renderLaporan()}}catch(e){console.error('muatKehadiran error:',e)}}
-async function muatTetapan(){try{const r=await fb.from('tetapan').select('data').eq('id',1).maybeSingle();if(r.data&&r.data.data){tetapan={...tetapan,...r.data.data};renderWaktu();isiTetapan();renderMasjid()}}catch(e){console.error('muatTetapan error:',e)}}
+async function muatStaff(){try{const r=await fb.from('staff').select('*').order('id');if(r.data){staff=r.data;renderLogin();semakSesi();renderProfil();renderSolat();renderSenaraiStaff()}}catch(e){}}
+async function muatKehadiran(){try{const r=await fb.from('kehadiran').select('*').order('ts',{ascending:false});if(r.data){log=r.data.map(fromRow);renderLog();renderSolat();renderLaporan()}}catch(e){}}
+async function muatTetapan(){try{const r=await fb.from('tetapan').select('data').eq('id',1).maybeSingle();if(r.data&&r.data.data){tetapan={...tetapan,...r.data.data};renderWaktu();isiTetapan();renderMasjid()}}catch(e){}}
 function qPush(op){queue.push(op);LS.set('pk_queue',queue)}
 function runOp(op){
  if(op.t==='staff_up')return fb.from('staff').upsert(op.p);
@@ -407,9 +407,9 @@ async function simpanStaffFB(s){
  if(!fb){const i=staff.findIndex(x=>x.id===s.id);if(i>-1)staff[i]=s;else staff.push(s);LS.set('pk_staff',staff);return}
  try{
   const {error}=await runOp({t:'staff_up',p:s});
-  if(error){const i=staff.findIndex(x=>x.id===s.id);if(i>-1)staff[i]=s;else staff.push(s);qPush({t:'staff_up',p:s});toast('📴 Disimpan offline')}
+   if(error){const i=staff.findIndex(x=>x.id===s.id);if(i>-1)staff[i]=s;else staff.push(s);qPush({t:'staff_up',p:s});toast('📴 Disimpan offline')}
   else{const i=staff.findIndex(x=>x.id===s.id);if(i>-1)staff[i]=s;else staff.push(s)}
- }catch(e){console.error('simpanStaffFB error:',e);toast('❌ Gagal simpan staff');}
+  }catch(e){toast('❌ Gagal simpan staff');}
 }
 async function hapusStaffFB(id){
  if(!fb){staff=staff.filter(x=>x.id!==id);LS.set('pk_staff',staff);return}
@@ -417,7 +417,7 @@ async function hapusStaffFB(id){
   const {error}=await runOp({t:'staff_del',p:{id}});
   if(error){staff=staff.filter(x=>x.id!==id);qPush({t:'staff_del',p:{id}})}
   else staff=staff.filter(x=>x.id!==id);
- }catch(e){console.error('hapusStaffFB error:',e);toast('❌ Gagal padam staff');}
+  }catch(e){toast('❌ Gagal padam staff');}
 }
 async function tambahKehadiran(r){
  r.ts=Date.now();
@@ -427,7 +427,7 @@ async function tambahKehadiran(r){
   const {data,error}=await fb.from('kehadiran').insert(row).select().maybeSingle();
   if(error||!data){r.id='L'+r.ts;log.unshift(r);qPush({t:'keh_insert',p:row});toast('📴 Disimpan offline')}
   else log.unshift(fromRow(data));
- }catch(e){console.error('tambahKehadiran error:',e);r.id='L'+r.ts;log.unshift(r);LS.set('pk_log',log);toast('📴 Disimpan offline');}
+  }catch(e){r.id='L'+r.ts;log.unshift(r);LS.set('pk_log',log);toast('📴 Disimpan offline');}
 }
 async function kemaskiniKehadiran(id,r){
  if(!fb){const i=log.findIndex(l=>l.id===id);if(i>-1){log[i]={...log[i],...r};LS.set('pk_log',log)}return}
@@ -437,14 +437,14 @@ async function kemaskiniKehadiran(id,r){
   const {error}=await runOp({t:'keh_update',p:{ts,upd}});
   const i=log.findIndex(l=>l.id===id);if(i>-1)log[i]={...log[i],...r};
   if(error)qPush({t:'keh_update',p:{ts,upd}});
- }catch(e){console.error('kemaskiniKehadiran error:',e);const i=log.findIndex(l=>l.id===id);if(i>-1){log[i]={...log[i],...r};LS.set('pk_log',log)}}
+  }catch(e){const i=log.findIndex(l=>l.id===id);if(i>-1){log[i]={...log[i],...r};LS.set('pk_log',log)}}
 }
 async function simpanTetapanFB(){
  if(!fb){LS.set('pk_tetapan',tetapan);return}
  try{
   const {error}=await runOp({t:'tetap_up',p:tetapan});
   if(error){LS.set('pk_tetapan',tetapan);qPush({t:'tetap_up',p:tetapan})}
- }catch(e){console.error('simpanTetapanFB error:',e);LS.set('pk_tetapan',tetapan);qPush({t:'tetap_up',p:tetapan});}
+  }catch(e){LS.set('pk_tetapan',tetapan);qPush({t:'tetap_up',p:tetapan});}
 }
 
 /* ============ 5. WAKTU SOLAT ============ */
@@ -454,13 +454,13 @@ async function muatWaktu(){
  const c=LS.get(key,null);if(c){waktuSolat=normalizeWaktuSolat(c);LS.set(key,waktuSolat);renderWaktu();return}
  try{
   let j=null;
-  try{const r=await fetch(`https://api.e-solat.gov.my/index.php?r=clim/prayerTimes&zone=${encodeURIComponent(tetapan.zon)}`);if(r.ok)j=await r.json()}catch(e){console.warn('e-solat fetch failed:',e)}
+   try{const r=await fetch(`https://api.e-solat.gov.my/index.php?r=clim/prayerTimes&zone=${encodeURIComponent(tetapan.zon)}`);if(r.ok)j=await r.json()}catch(e){}
   if(!j){
    try{const r2=await fetch('/api/waktu-solat?zon='+encodeURIComponent(tetapan.zon));j=await r2.json()}catch(e2){if(fb){const r3=await fetch(SUPABASE_URL+'/functions/v1/waktu-solat?zon='+encodeURIComponent(tetapan.zon));j=await r3.json()}}
   }
   const d=j?.data?.[0]||j?.prayerTime?.[0];
   if(d){waktuSolat=normalizeWaktuSolat({Subuh:to24(d.fajr),Syuruk:to24(d.syuruk),Zohor:to24(d.dhuhr),Asar:to24(d.asr),Maghrib:to24(d.maghrib),Isyak:to24(d.isha)});LS.set(key,waktuSolat)}
- }catch(e){console.error('muatWaktu error:',e)}
+  }catch(e){}
  renderWaktu();
 }
 
