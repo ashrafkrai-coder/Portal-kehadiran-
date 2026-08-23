@@ -867,9 +867,28 @@ document.querySelectorAll('#tabbar button').forEach(b=>b.onclick=()=>tukarTab(b.
 $('#bulanPilih').value=bulanKini();$('#bulanPilih').onchange=renderLaporan;
 
 (function init(){
- const d=new Date();let hijri='';
- try{hijri=' / '+new Intl.DateTimeFormat('ms-MY-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(d)}catch(e){}
- $('#tarikhLine').textContent=d.toLocaleDateString('ms-MY',{day:'numeric',month:'long',year:'numeric'})+hijri;
+  const d=new Date();
+  const hijriMonths=['Muharram','Safar','Rabiulawwal','Rabiulakhir','Jamadilawwal','Jamadilakhir','Rejab','Syaaban','Ramadan','Syawal','Zulkaedah','Zulhijjah'];
+  let hijri='';
+  try{
+    const y=d.getFullYear(),m=d.getMonth()+1,dd=d.getDate();
+    const a=Math.floor((11*y+3)/30);
+    const b=Math.floor(y/100);
+    const c=2-b+Math.floor(b/4);
+    const e=Math.floor(365.25*(y+4716));
+    const f=Math.floor(30.6001*(m+1));
+    const jd=a+e+f+dd+c-1524-385;
+    const l=jd-1948440+10632;
+    const n=Math.floor((l-1)/10631);
+    const l2=l-10631*n+354;
+    const j=Math.floor((10985-l2)/5316)*Math.floor((50*l2)/17719)+Math.floor(l2/5670)*Math.floor((43*l2)/15238);
+    const l3=l2-Math.floor((30-j)/15)*Math.floor((17719*j)/50)-Math.floor(j/16)*Math.floor((15238*j)/43)+29;
+    const hm=Math.floor((24*l3)/709);
+    const hd=l3-Math.floor((709*hm)/24);
+    const hy=30*n+j-30;
+    hijri=' / '+hd+' '+hijriMonths[hm-1]+' '+hy+'H';
+  }catch(e){}
+  $('#tarikhLine').textContent=d.toLocaleDateString('ms-MY',{day:'numeric',month:'long',year:'numeric'})+hijri;
  const updateLiveClock=()=>{const el=$('#masaLive');if(el)el.textContent=to12(masaKini())};
  updateLiveClock();
  setInterval(updateLiveClock,1000);
