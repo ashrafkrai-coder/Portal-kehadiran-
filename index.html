@@ -118,8 +118,16 @@ th{background:#efe9db}
 .login-inline-toggle .btn2{flex:1;min-width:120px}
 .logo-preview{width:120px;height:120px;border-radius:50%;margin:0 auto 12px;overflow:hidden;background:#eee;border:3px solid var(--emas);display:flex;align-items:center;justify-content:center;font-size:50px;cursor:pointer}
 .logo-preview img{width:100%;height:100%;object-fit:cover}
-.time-picker-wrap{position:relative;width:100%}
-.time-picker{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--hijau2);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:9999;padding:12px;margin-top:4px;display:flex;flex-direction:column;gap:8px}
+.time-picker-wrap{position:relative;width:100%;margin-bottom:4px}
+.time-picker{position:absolute;top:100%;left:50%;transform:translateX(-50%) translateY(-0px);background:#fff;border:1.5px solid var(--hijau2);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:9999;padding:12px;margin-top:6px;display:flex;flex-direction:column;gap:8px;min-width:260px;max-width:95vw;max-height:40vh;overflow:auto}
+.time-picker-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.time-picker-modal.active{display:flex}
+.time-picker-modal .modal-content{background:#fff;border-radius:12px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.15);max-width:100%;width:100%;max-height:90vh;overflow:auto}
+.card-modal{position:relative}
+.card-modal-wrap{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px}
+.card-modal-wrap.active{display:flex}
+.card-modal-wrap .card-modal-content{background:#fff;border-radius:12px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.15);max-width:100%;width:100%;max-height:90vh;overflow-y:auto}
+.card-modal-wrap.close-btn{position:absolute;top:12px;right:12px;z-index:10001;background:none;border:none;font-size:24px;cursor:pointer;color:#b91c1c}
 .time-picker .tp-row{display:flex;gap:8px;align-items:center}
 .time-picker .tp-col{flex:1;display:flex;flex-direction:column;gap:4px}
 .time-picker label{font-size:11px;color:#6b7280;margin:0}
@@ -199,77 +207,108 @@ th{background:#efe9db}
     <input type="password" id="pinInput" inputmode="numeric" placeholder="••••" autocomplete="off" aria-label="PIN Admin">
     <button type="button" class="btn2" id="btnPin">Buka Kunci</button>
   </div>
-  <div id="adminBody" hidden>
-    <div class="kad" style="padding:16px">
-      <div class="tajuk">🕌 Pengurusan Masjid</div>
-      <div class="logo-preview" id="logoPreview" role="button" tabindex="0" aria-label="Klik untuk muat naik logo masjid">🕌<input type="file" id="fileLogo" accept="image/*" hidden aria-label="Pilih fail logo"></div>
-      <p class="muktamad" style="margin:-8px 0 10px">Klik logo untuk muat naik</p>
-      <label for="tNamaMasjid">Nama Masjid</label><input id="tNamaMasjid" placeholder="Cth: Masjid Al-Falah" aria-label="Nama Masjid">
-      <label for="tAlamat">Alamat (pilihan)</label><input id="tAlamat" placeholder="Cth: Shah Alam, Selangor" aria-label="Alamat Masjid">
-      <button type="button" class="btn2" id="btnSimpanMasjid">Simpan Info Masjid</button>
-    </div>
-    <div class="kad" style="padding:16px">
-      <div class="tajuk" id="staffFormTitle">Daftar Staff Baru</div>
-      <div class="avatar-up" id="avatarUp" role="button" tabindex="0" aria-label="Klik untuk muat naik gambar profil">📷<input type="file" id="fileGambar" accept="image/*" hidden aria-label="Pilih gambar profil"></div>
-      <label for="fNama">Nama Penuh</label><input id="fNama" placeholder="Cth: Ahmad bin Ali" aria-label="Nama Penuh Staff">
-      <label for="fId">ID Staff</label><input id="fId" placeholder="Cth: S004" aria-label="ID Staff">
-      <label for="fJawatan">Jawatan</label>
-      <select id="fJawatan" aria-label="Jawatan Staff"><option value="">Pilih Jawatan</option><option>Imam</option><option>Bilal</option><option>Staff</option><option>Siak</option><option>Pengawal</option></select>
-      <label for="fPin">PIN Login Staff (kosong = 1234)</label><input id="fPin" inputmode="numeric" placeholder="1234" autocomplete="off" aria-label="PIN Staff">
-      <button type="button" class="btn2" id="btnSimpanStaff">Simpan Profil</button>
-      <button type="button" class="btn2 merah" id="btnBatalEdit" style="margin-top:6px;display:none">Batal Edit</button>
-    </div>
-    <div class="tajuk">Senarai Staff</div><div id="senaraiStaff" style="overflow:visible"></div>
-    <div class="kad" style="padding:16px;margin-top:12px;overflow:visible">
-      <div class="tajuk">🔑 Clock In Manual Imam/Bilal (Admin)</div>
-      <p class="muktamad" style="margin-bottom:10px">Gunakan jika Imam/Bilal terlupa clock in. Pilih staff, waktu solat, dan masa.</p>
-      <label for="manualStaff">Pilih Imam/Bilal</label>
-      <select id="manualStaff" aria-label="Pilih Imam atau Bilal"><option value="">-- Pilih --</option></select>
-      <label for="manualWaktu">Waktu Solat</label>
-      <select id="manualWaktu" aria-label="Pilih Waktu Solat"><option value="">-- Pilih --</option><option>Subuh</option><option>Zohor</option><option>Asar</option><option>Maghrib</option><option>Isyak</option></select>
-      <label for="manualMasa">Masa Clock In (format 12h, cth: 05:45 AM)</label>
-      <input type="text" id="manualMasa" placeholder="Cth: 05:45 AM" aria-label="Masa Clock In">
-      <button type="button" class="btn2" id="btnManualClockIn" style="margin-top:8px">✅ Simpan Clock In Manual</button>
-    </div>
-    <div class="kad" style="padding:16px;margin-top:12px;overflow:visible">
-      <div class="tajuk">📝 Edit / Padam Kehadiran (Admin)</div>
-      <p class="muktamad" style="margin-bottom:10px">Pilih staff, tarikh, dan masa untuk kemaskini atau padam rekod.</p>
-      <label for="editStaff">Pilih Staff</label>
-      <select id="editStaff" aria-label="Pilih Staff"><option value="">-- Pilih --</option></select>
-      <label for="editTarikh">Tarikh</label>
-      <input type="date" id="editTarikh" aria-label="Tarikh">
-      <label for="editMasaIn">Masa In (format 12h, cth: 05:45 AM)</label>
-      <div class="time-picker-wrap">
-        <input type="text" id="editMasaIn" placeholder="Cth: 05:45 AM" aria-label="Masa In" readonly>
-        <div class="time-picker" id="tpIn" hidden></div>
+<div id="adminBody" hidden>
+    <div id="modalMasjid" class="card-modal-wrap">
+      <button class="close-btn" onclick="document.getElementById('modalMasjid').classList.remove('active')">&times;</button>
+      <div class="card-modal-content">
+        <div class="kad" style="padding:16px">
+          <div class="tajuk">🕌 Pengurusan Masjid</div>
+          <div class="logo-preview" id="logoPreview" role="button" tabindex="0" aria-label="Klik untuk muat naik logo masjid">🕌<input type="file" id="fileLogo" accept="image/*" hidden aria-label="Pilih fail logo"></div>
+          <p class="muktamad" style="margin:-8px 0 10px">Klik logo untuk muat naik</p>
+          <label for="tNamaMasjid">Nama Masjid</label><input id="tNamaMasjid" placeholder="Cth: Masjid Al-Falah" aria-label="Nama Masjid">
+          <label for="tAlamat">Alamat (pilihan)</label><input id="tAlamat" placeholder="Cth: Shah Alam, Selangor" aria-label="Alamat Masjid">
+          <button type="button" class="btn2" id="btnSimpanMasjid">Simpan Info Masjid</button>
+        </div>
       </div>
-      <label for="editMasaOut">Masa Out (format 12h, kosong = tiada)</label>
-      <div class="time-picker-wrap">
-        <input type="text" id="editMasaOut" placeholder="Cth: 05:45 PM" aria-label="Masa Out" readonly>
-        <div class="time-picker" id="tpOut" hidden></div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button type="button" class="btn2" id="btnKemaskiniKehadiran" style="flex:1">✏️ Kemaskini</button>
-        <button type="button" class="btn2 merah" id="btnPadamKehadiran" style="flex:1">🗑️ Padam</button>
-      </div>
-      <div id="senaraiEditKehadiran" style="margin-top:10px;max-height:200px;overflow:auto"></div>
     </div>
-    <div class="kad" style="padding:16px;margin-top:12px;overflow:visible">
-      <div class="tajuk">Tetapan Sistem & Geofencing</div>
-      <label for="tLat">Latitud Pejabat/Masjid</label><input id="tLat" type="number" step="any" min="-90" max="90" aria-label="Latitud">
-      <label for="tLng">Longitud</label><input id="tLng" type="number" step="any" min="-180" max="180" aria-label="Longitud">
-      <label for="tRadius">Radius Zon (meter)</label><input id="tRadius" type="number" min="10" max="5000" aria-label="Radius Zon Meter">
-      <label for="tDurasi">Tempoh dibenarkan Clock In selepas azan (minit)</label><input id="tDurasi" type="number" min="1" max="120" aria-label="Tempoh Clock In Minit">
-      <label for="tImam">Elaun Imam (RM / waktu)</label><input id="tImam" type="number" min="0" max="100" aria-label="Elaun Imam">
-      <label for="tBilal">Elaun Bilal (RM / waktu)</label><input id="tBilal" type="number" min="0" max="100" aria-label="Elaun Bilal">
-      <label for="tZon">Zon JAKIM</label><input id="tZon" placeholder="SGR01" aria-label="Zon JAKIM">
-      <label for="tPin">PIN Admin Baru</label><input id="tPin" autocomplete="off" aria-label="PIN Admin Baru">
-      <button type="button" class="btn2" id="btnSimpanTetapan">Simpan Tetapan</button>
-      <button type="button" class="btn2 merah" id="btnTablet" style="margin-top:8px" aria-label="Daftar Peranti Ini Sebagai Tablet Kiosk">📱 Daftar Peranti Ini Sebagai Tablet Kiosk</button>
-      <button type="button" class="btn2" id="btnPDF2" style="margin-top:8px" aria-label="Eksport PDF Penuh Admin">📄 Eksport PDF Penuh (Admin)</button>
-      <button type="button" class="btn2 merah" id="btnLock" style="margin-top:8px" aria-label="Kunci Admin">🔒 Kunci Admin</button>
-      <p class="muktamad" id="modLabel"></p>
+    <div id="modalStaff" class="card-modal-wrap">
+      <button class="close-btn" onclick="document.getElementById('modalStaff').classList.remove('active')">&times;</button>
+      <div class="card-modal-content">
+        <div class="kad" style="padding:16px">
+          <div class="tajuk" id="staffFormTitle">Daftar Staff Baru</div>
+          <div class="avatar-up" id="avatarUp" role="button" tabindex="0" aria-label="Klik untuk muat naik gambar profil">📷<input type="file" id="fileGambar" accept="image/*" hidden aria-label="Pilih gambar profil"></div>
+          <label for="fNama">Nama Penuh</label><input id="fNama" placeholder="Cth: Ahmad bin Ali" aria-label="Nama Penuh Staff">
+          <label for="fId">ID Staff</label><input id="fId" placeholder="Cth: S004" aria-label="ID Staff">
+          <label for="fJawatan">Jawatan</label>
+          <select id="fJawatan" aria-label="Jawatan Staff"><option value="">Pilih Jawatan</option><option>Imam</option><option>Bilal</option><option>Staff</option><option>Siak</option><option>Pengawal</option></select>
+          <label for="fPin">PIN Login Staff (kosong = 1234)</label><input id="fPin" inputmode="numeric" placeholder="1234" autocomplete="off" aria-label="PIN Staff">
+          <button type="button" class="btn2" id="btnSimpanStaff">Simpan Profil</button>
+          <button type="button" class="btn2 merah" id="btnBatalEdit" style="margin-top:6px;display:none">Batal Edit</button>
+        </div>
+      </div>
     </div>
+    <div id="modalSenarai" class="card-modal-wrap">
+      <button class="close-btn" onclick="document.getElementById('modalSenarai').classList.remove('active')">&times;</button>
+      <div class="card-modal-content">
+        <div class="kad" style="padding:16px">
+          <div class="tajuk">Senarai Staff</div>
+          <div id="senaraiStaff" style="overflow:visible;position:relative;z-index:1"></div>
+        </div>
+      </div>
+    </div>
+    <div id="modalManual" class="card-modal-wrap">
+      <button class="close-btn" onclick="document.getElementById('modalManual').classList.remove('active')">&times;</button>
+      <div class="card-modal-content">
+        <div class="kad" style="padding:16px">
+          <div class="tajuk">🔑 Clock In Manual Imam/Bilal (Admin)</div>
+          <p class="muktamad" style="margin-bottom:10px">Gunakan jika Imam/Bilal terlupa clock in. Pilih staff, waktu solat, dan masa.</p>
+          <label for="manualStaff">Pilih Imam/Bilal</label>
+          <select id="manualStaff" aria-label="Pilih Imam atau Bilal"><option value="">-- Pilih --</option></select>
+          <label for="manualWaktu">Waktu Solat</label>
+          <select id="manualWaktu" aria-label="Pilih Waktu Solat"><option value="">-- Pilih --</option><option>Subuh</option><option>Zohor</option><option>Asar</option><option>Maghrib</option><option>Isyak</option></select>
+          <label for="manualMasa">Masa Clock In (format 12h, cth: 05:45 AM)</label>
+          <input type="text" id="manualMasa" placeholder="Cth: 05:45 AM" aria-label="Masa Clock In">
+          <button type="button" class="btn2" id="btnManualClockIn" style="margin-top:8px">✅ Simpan Clock In Manual</button>
+        </div>
+      </div>
+    </div>
+    <div id="editKehadiranContainer" style="overflow:visible">
+      <div class="kad" style="padding:16px;margin-top:12px;overflow:visible">
+        <div class="tajuk">📝 Edit / Padam Kehadiran (Admin)</div>
+        <p class="muktamad" style="margin-bottom:10px">Pilih staff, tarikh, dan masa untuk kemaskini atau padam rekod.</p>
+        <label for="editStaff">Pilih Staff</label>
+        <select id="editStaff" aria-label="Pilih Staff"><option value="">-- Pilih --</option></select>
+        <label for="editTarikh">Tarikh</label>
+        <input type="date" id="editTarikh" aria-label="Tarikh">
+        <label for="editMasaIn">Masa In (format 12h, cth: 05:45 AM)</label>
+        <div class="time-picker-wrap">
+          <input type="text" id="editMasaIn" placeholder="Cth: 05:45 AM" aria-label="Masa In" readonly>
+          <div class="time-picker-modal" id="tpInModal" hidden></div>
+        </div>
+        <label for="editMasaOut">Masa Out (format 12h, kosong = tiada)</label>
+        <div class="time-picker-wrap">
+          <input type="text" id="editMasaOut" placeholder="Cth: 05:45 PM" aria-label="Masa Out" readonly>
+          <div class="time-picker-modal" id="tpOutModal" hidden></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button type="button" class="btn2" id="btnKemaskiniKehadiran" style="flex:1">✏️ Kemaskini</button>
+          <button type="button" class="btn2 merah" id="btnPadamKehadiran" style="flex:1">🗑️ Padam</button>
+        </div>
+        <div id="senaraiEditKehadiran" style="margin-top:10px;max-height:200px;overflow:auto"></div>
+      </div>
+    </div>
+    <div id="modalTetapan" class="card-modal-wrap">
+      <button class="close-btn" onclick="document.getElementById('modalTetapan').classList.remove('active')">&times;</button>
+      <div class="card-modal-content">
+        <div class="kad" style="padding:16px">
+          <div class="tajuk">Tetapan Sistem & Geofencing</div>
+          <label for="tLat">Latitud Pejabat/Masjid</label><input id="tLat" type="number" step="any" min="-90" max="90" aria-label="Latitud">
+          <label for="tLng">Longitud</label><input id="tLng" type="number" step="any" min="-180" max="180" aria-label="Longitud">
+          <label for="tRadius">Radius Zon (meter)</label><input id="tRadius" type="number" min="10" max="5000" aria-label="Radius Zon Meter">
+          <label for="tDurasi">Tempoh dibenarkan Clock In selepas azan (minit)</label><input id="tDurasi" type="number" min="1" max="120" aria-label="Tempoh Clock In Minit">
+          <label for="tImam">Elaun Imam (RM / waktu)</label><input id="tImam" type="number" min="0" max="100" aria-label="Elaun Imam">
+          <label for="tBilal">Elaun Bilal (RM / waktu)</label><input id="tBilal" type="number" min="0" max="100" aria-label="Elaun Bilal">
+          <label for="tZon">Zon JAKIM</label><input id="tZon" placeholder="SGR01" aria-label="Zon JAKIM">
+          <label for="tPin">PIN Admin Baru</label><input id="tPin" autocomplete="off" aria-label="PIN Admin Baru">
+          <button type="button" class="btn2" id="btnSimpanTetapan">Simpan Tetapan</button>
+          <button type="button" class="btn2 merah" id="btnTablet" style="margin-top:8px" aria-label="Daftar Peranti Ini Sebagai Tablet Kiosk">📱 Daftar Peranti Ini Sebagai Tablet Kiosk</button>
+          <button type="button" class="btn2" id="btnPDF2" style="margin-top:8px" aria-label="Eksport PDF Penuh Admin">📄 Eksport PDF Penuh (Admin)</button>
+          <button type="button" class="btn2 merah" id="btnLock" style="margin-top:8px" aria-label="Kunci Admin">🔒 Kunci Admin</button>
+          <p class="muktamad" id="modLabel"></p>
+        </div>
+      </div>
+    </div>
+  </div>
   </div>
 </section>
 
@@ -791,30 +830,32 @@ $('#editTarikh').onchange=()=>{renderSenaraiEditKehadiran()};
 
 function initTimePicker(inputId,pickerId){
   const input=$('#'+inputId),picker=$('#'+pickerId);
+  if(!input||!picker)return;
   let selectedH=12,selectedM=0,selectedAP='AM';
   function buildPicker(){
     const hours=[...Array(12)].map((_,i)=>(i+1).toString().padStart(2,'0'));
     const mins=['00','15','30','45'];
-    picker.innerHTML=`<div class="tp-row">
-      <div class="tp-col"><label>Jam</label><select id="tpH">${hours.map(h=>`<option value="${h}"${h===selectedH?' selected':''}>${h}</option>`).join('')}</select></div>
-      <div class="tp-col"><label>Minit</label><select id="tpM">${mins.map(m=>`<option value="${m}"${m===selectedM?' selected':''}>${m}</option>`).join('')}</select></div>
-      <div class="tp-col"><label>AM/PM</label><select id="tpAP"><option value="AM"${selectedAP==='AM'?' selected':''}>AM</option><option value="PM"${selectedAP==='PM'?' selected':''}>PM</option></select></div>
-    </div>
-    <div class="tp-actions"><button class="tp-cancel">Batal</button><button class="tp-ok">OK</button></div>`;
-    $('#tpH').onchange=e=>{selectedH=e.target.value};
-    $('#tpM').onchange=e=>{selectedM=e.target.value};
-    $('#tpAP').onchange=e=>{selectedAP=e.target.value};
+    const hSel=hours.map(h=>`<option value="${h}"${h===String(selectedH).padStart(2,'0')?' selected':''}>${h}</option>`).join('');
+    const mSel=mins.map(m=>`<option value="${m}"${m===selectedM?' selected':''}>${m}</option>`).join('');
+    const apSel=['AM','PM'].map(a=>`<option value="${a}"${a===selectedAP?' selected':''}>${a}</option>`).join('');
+    picker.innerHTML='<div class="modal-content"><div style="display:flex;flex-direction:column;gap:8px"><div class="tp-row">'+
+      '<div class="tp-col"><label>Jam</label><select id="tpH">'+hSel+'</select></div>'+
+      '<div class="tp-col"><label>Minit</label><select id="tpM">'+mSel+'</select></div>'+
+      '<div class="tp-col"><label>AM/PM</label><select id="tpAP">'+apSel+'</select></div>'+
+      '</div><div class="tp-actions" style="justify-content:flex-end;gap:8px;margin-top:8px"><button class="tp-cancel" style="background:#fee2e2;color:#b91c1c;border:none;border-radius:8px;padding:8px 16px;font-weight:700">Batal</button><button class="tp-ok" style="background:var(--hijau);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-weight:700">OK</button></div></div></div>';
+    const hS=picker.querySelector('#tpH'),mS=picker.querySelector('#tpM'),apS=picker.querySelector('#tpAP');
+    hS.onchange=e=>{selectedH=parseInt(e.target.value,10);};
+    mS.onchange=e=>{selectedM=e.target.value;};
+    apS.onchange=e=>{selectedAP=e.target.value;};
     const okBtn=picker.querySelector('.tp-ok');
-    okBtn.onclick=()=>{input.value=`${selectedH}:${selectedM} ${selectedAP}`;picker.hidden=true;};
+    okBtn.onclick=()=>{input.value=`${String(selectedH).padStart(2,'0')}:${selectedM} ${selectedAP}`;picker.classList.remove('active');};
     const cancelBtn=picker.querySelector('.tp-cancel');
-    cancelBtn.onclick=()=>{picker.hidden=true;};
+    cancelBtn.onclick=()=>{picker.classList.remove('active');};
   }
-  input.onclick=()=>{buildPicker();picker.hidden=false;};
-  document.addEventListener('click',e=>{if(picker.hidden===false){if(!picker.contains(e.target) && e.target!==input)picker.hidden=true;}});
-  input.addEventListener('blur',()=>{setTimeout(()=>{if(!picker.contains(document.activeElement))picker.hidden=true;},100);});
+  input.onclick=(e)=>{e.stopPropagation();buildPicker();picker.classList.add('active');};
 }
-initTimePicker('editMasaIn','tpIn');
-initTimePicker('editMasaOut','tpOut');
+initTimePicker('editMasaIn','tpInModal');
+initTimePicker('editMasaOut','tpOutModal');
 
 $('#btnKemaskiniKehadiran').onclick=async()=>{
   const staffId=$('#editStaff').value,tarikh=$('#editTarikh').value,masaIn=$('#editMasaIn').value.trim(),masaOut=$('#editMasaOut').value.trim();
