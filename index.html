@@ -925,18 +925,19 @@ function renderLogin(){
  $('#loginId').innerHTML=staff.map(s=>`<option value="${s.id}">${s.nama} (${s.id}) — ${s.jawatan}</option>`).join('')||'<option value="">Tiada staff berdaftar</option>';
 }
 function semakSesi(){
- const panel=$('#loginPanel');
- if(modTablet()){
-  if(panel)panel.hidden=true;
-  return;
- }
- if(sesi&&staff.some(s=>s.id===sesi)){
-  pilih=sesi;LS.set('pk_pilih',pilih);
-  if(panel)panel.hidden=true;
-  }else{
-   if(panel)panel.hidden=false;
+  const panel=$('#loginPanel');
+  if(modTablet()){
+   if(panel)panel.hidden=true;
+   return;
   }
- renderLoginButton();
+  if(sesi&&staff.some(s=>s.id===sesi)){
+   pilih=sesi;LS.set('pk_pilih',pilih);
+   if(panel)panel.hidden=true;
+   }else{
+    if(panel)panel.hidden=false;
+   }
+  renderLoginButton();
+  updateSolatTab();
 }
 $('#btnLogin').onclick=()=>{
  const pin=$('#loginPin').value;
@@ -956,9 +957,17 @@ function masuk(){
     pilih=sesi;LS.set('pk_pilih',pilih);
   }
   tukarTab(s && solatRole(s.jawatan) ? 'solat' : 'utama');
+  updateSolatTab();
   toast('👋 Selamat datang, '+s.nama);
 }
 function keluar(){sesi=null;localStorage.removeItem('pk_sesi');pilih=null;LS.set('pk_pilih',null);$('#loginPin').value='';semakSesi();renderLoginButton();renderProfil()}
+function updateSolatTab(){
+  const solatBtn=document.querySelector('#tabbar button[data-tab="solat"]');
+  const s=staff.find(x=>x.id===sesi);
+  if(solatBtn){
+    solatBtn.style.display=(s && solatRole(s.jawatan))?'flex':'none';
+  }
+}
 function tukarTab(t){
  document.querySelectorAll('#tabbar button').forEach(x=>x.classList.toggle('aktif',x.dataset.tab===t));
  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
