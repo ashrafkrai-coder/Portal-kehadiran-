@@ -119,7 +119,7 @@ th{background:#efe9db}
 .logo-preview{width:120px;height:120px;border-radius:50%;margin:0 auto 12px;overflow:hidden;background:#eee;border:3px solid var(--emas);display:flex;align-items:center;justify-content:center;font-size:50px;cursor:pointer}
 .logo-preview img{width:100%;height:100%;object-fit:cover}
 .time-picker-wrap{position:relative;width:100%}
-.time-picker{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--hijau2);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:50;padding:12px;margin-top:4px;display:flex;flex-direction:column;gap:8px}
+.time-picker{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--hijau2);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:9999;padding:12px;margin-top:4px;display:flex;flex-direction:column;gap:8px}
 .time-picker .tp-row{display:flex;gap:8px;align-items:center}
 .time-picker .tp-col{flex:1;display:flex;flex-direction:column;gap:4px}
 .time-picker label{font-size:11px;color:#6b7280;margin:0}
@@ -219,8 +219,8 @@ th{background:#efe9db}
       <button type="button" class="btn2" id="btnSimpanStaff">Simpan Profil</button>
       <button type="button" class="btn2 merah" id="btnBatalEdit" style="margin-top:6px;display:none">Batal Edit</button>
     </div>
-    <div class="tajuk">Senarai Staff</div><div id="senaraiStaff"></div>
-    <div class="kad" style="padding:16px;margin-top:12px">
+    <div class="tajuk">Senarai Staff</div><div id="senaraiStaff" style="overflow:visible"></div>
+    <div class="kad" style="padding:16px;margin-top:12px;overflow:visible">
       <div class="tajuk">🔑 Clock In Manual Imam/Bilal (Admin)</div>
       <p class="muktamad" style="margin-bottom:10px">Gunakan jika Imam/Bilal terlupa clock in. Pilih staff, waktu solat, dan masa.</p>
       <label for="manualStaff">Pilih Imam/Bilal</label>
@@ -254,7 +254,7 @@ th{background:#efe9db}
       </div>
       <div id="senaraiEditKehadiran" style="margin-top:10px;max-height:200px;overflow:auto"></div>
     </div>
-    <div class="kad" style="padding:16px;margin-top:12px">
+    <div class="kad" style="padding:16px;margin-top:12px;overflow:visible">
       <div class="tajuk">Tetapan Sistem & Geofencing</div>
       <label for="tLat">Latitud Pejabat/Masjid</label><input id="tLat" type="number" step="any" min="-90" max="90" aria-label="Latitud">
       <label for="tLng">Longitud</label><input id="tLng" type="number" step="any" min="-180" max="180" aria-label="Longitud">
@@ -804,12 +804,14 @@ function initTimePicker(inputId,pickerId){
     $('#tpH').onchange=e=>{selectedH=e.target.value};
     $('#tpM').onchange=e=>{selectedM=e.target.value};
     $('#tpAP').onchange=e=>{selectedAP=e.target.value};
-    picker.querySelector('.tp-ok').onclick=()=>{input.value=`${selectedH}:${selectedM} ${selectedAP}`;picker.hidden=true};
-    picker.querySelector('.tp-cancel').onclick=()=>{picker.hidden=true};
+    const okBtn=picker.querySelector('.tp-ok');
+    okBtn.onclick=()=>{input.value=`${selectedH}:${selectedM} ${selectedAP}`;picker.hidden=true;};
+    const cancelBtn=picker.querySelector('.tp-cancel');
+    cancelBtn.onclick=()=>{picker.hidden=true;};
   }
-  input.onfocus=()=>{buildPicker();picker.hidden=false};
-  document.addEventListener('click',e=>{if(!picker.contains(e.target)&&e.target!==input)picker.hidden=true});
-  input.onclick=e=>e.stopPropagation();
+  input.onclick=()=>{buildPicker();picker.hidden=false;};
+  document.addEventListener('click',e=>{if(picker.hidden===false){if(!picker.contains(e.target) && e.target!==input)picker.hidden=true;}});
+  input.addEventListener('blur',()=>{setTimeout(()=>{if(!picker.contains(document.activeElement))picker.hidden=true;},100);});
 }
 initTimePicker('editMasaIn','tpIn');
 initTimePicker('editMasaOut','tpOut');
