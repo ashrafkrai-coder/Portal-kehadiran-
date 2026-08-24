@@ -857,6 +857,18 @@ function initTimePicker(inputId,pickerId){
 initTimePicker('editMasaIn','tpInModal');
 initTimePicker('editMasaOut','tpOutModal');
 
+// Card title click handlers to open modals
+document.querySelectorAll('#adminBody .tajuk').forEach((t,i)=>{
+  const titles=['🕌 Pengurusan Masjid','📝 Daftar Staff Baru','📋 Senarai Staff','🔑 Clock In Manual Imam/Bilal','📝 Edit / Padam Kehadiran','⚙️ Tetapan Sistem & Geofencing'];
+  const ids=['modalMasjid','modalStaff','modalSenarai','modalManual','editKehadiranContainer','modalTetapan'];
+  if(t.textContent.includes(titles[i])){
+    t.style.cursor='pointer';
+    t.onclick=()=>{document.getElementById(ids[i])?.classList.add('active')};
+  }
+});
+
+
+
 $('#btnKemaskiniKehadiran').onclick=async()=>{
   const staffId=$('#editStaff').value,tarikh=$('#editTarikh').value,masaIn=$('#editMasaIn').value.trim(),masaOut=$('#editMasaOut').value.trim();
   if(!staffId||!tarikh||!masaIn)return toast('❌ Lengkapkan staff, tarikh, masa In');
