@@ -110,6 +110,16 @@ th{background:#efe9db}
 .login-inline-toggle .btn2{flex:1;min-width:120px}
 .logo-preview{width:120px;height:120px;border-radius:50%;margin:0 auto 12px;overflow:hidden;background:#eee;border:3px solid var(--emas);display:flex;align-items:center;justify-content:center;font-size:50px;cursor:pointer}
 .logo-preview img{width:100%;height:100%;object-fit:cover}
+.time-picker-wrap{position:relative;width:100%}
+.time-picker{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--hijau2);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:50;padding:12px;margin-top:4px;display:flex;flex-direction:column;gap:8px}
+.time-picker .tp-row{display:flex;gap:8px;align-items:center}
+.time-picker .tp-col{flex:1;display:flex;flex-direction:column;gap:4px}
+.time-picker label{font-size:11px;color:#6b7280;margin:0}
+.time-picker select{padding:8px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;background:#fff}
+.time-picker .tp-actions{display:flex;gap:8px;margin-top:4px}
+.time-picker .tp-actions button{flex:1;padding:10px;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer}
+.time-picker .tp-ok{background:var(--hijau);color:#fff}
+.time-picker .tp-cancel{background:#fee2e2;color:#b91c1c}
 </style>
 </head>
 <body>
@@ -212,6 +222,29 @@ th{background:#efe9db}
       <label for="manualMasa">Masa Clock In (format 12h, cth: 05:45 AM)</label>
       <input type="text" id="manualMasa" placeholder="Cth: 05:45 AM" aria-label="Masa Clock In">
       <button type="button" class="btn2" id="btnManualClockIn" style="margin-top:8px">✅ Simpan Clock In Manual</button>
+    </div>
+    <div class="kad" style="padding:16px;margin-top:12px">
+      <div class="tajuk">📝 Edit / Padam Kehadiran (Admin)</div>
+      <p class="muktamad" style="margin-bottom:10px">Pilih staff, tarikh, dan masa untuk kemaskini atau padam rekod.</p>
+      <label for="editStaff">Pilih Staff</label>
+      <select id="editStaff" aria-label="Pilih Staff"><option value="">-- Pilih --</option></select>
+      <label for="editTarikh">Tarikh</label>
+      <input type="date" id="editTarikh" aria-label="Tarikh">
+      <label for="editMasaIn">Masa In (format 12h, cth: 05:45 AM)</label>
+      <div class="time-picker-wrap">
+        <input type="text" id="editMasaIn" placeholder="Cth: 05:45 AM" aria-label="Masa In" readonly>
+        <div class="time-picker" id="tpIn" hidden></div>
+      </div>
+      <label for="editMasaOut">Masa Out (format 12h, kosong = tiada)</label>
+      <div class="time-picker-wrap">
+        <input type="text" id="editMasaOut" placeholder="Cth: 05:45 PM" aria-label="Masa Out" readonly>
+        <div class="time-picker" id="tpOut" hidden></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button type="button" class="btn2" id="btnKemaskiniKehadiran" style="flex:1">✏️ Kemaskini</button>
+        <button type="button" class="btn2 merah" id="btnPadamKehadiran" style="flex:1">🗑️ Padam</button>
+      </div>
+      <div id="senaraiEditKehadiran" style="margin-top:10px;max-height:200px;overflow:auto"></div>
     </div>
     <div class="kad" style="padding:16px;margin-top:12px">
       <div class="tajuk">Tetapan Sistem & Geofencing</div>
@@ -390,12 +423,13 @@ async function muatKehadiran(){try{const r=await fb.from('kehadiran').select('*'
 async function muatTetapan(){try{const r=await fb.from('tetapan').select('data').eq('id',1).maybeSingle();if(r.data&&r.data.data){tetapan={...tetapan,...r.data.data};renderWaktu();isiTetapan();renderMasjid()}}catch(e){}}
 function qPush(op){queue.push(op);LS.set('pk_queue',queue)}
 function runOp(op){
- if(op.t==='staff_up')return fb.from('staff').upsert(op.p);
- if(op.t==='staff_del')return fb.from('staff').delete().eq('id',op.p.id);
- if(op.t==='keh_insert')return fb.from('kehadiran').insert(op.p);
- if(op.t==='keh_update')return fb.from('kehadiran').update(op.p.upd).eq('ts',op.p.ts);
- if(op.t==='tetap_up')return fb.from('tetapan').upsert({id:1,data:op.p});
- return Promise.resolve({error:null});
+  if(op.t==='staff_up')return fb.from('staff').upsert(op.p);
+  if(op.t==='staff_del')return fb.from('staff').delete().eq('id',op.p.id);
+  if(op.t==='keh_insert')return fb.from('kehadiran').insert(op.p);
+  if(op.t==='keh_update')return fb.from('kehadiran').update(op.p.upd).eq('ts',op.p.ts);
+  if(op.t==='keh_del')return fb.from('kehadiran').delete().eq('ts',op.p.ts);
+  if(op.t==='tetap_up')return fb.from('tetapan').upsert({id:1,data:op.p});
+  return Promise.resolve({error:null});
 }
 async function flushQueue(){
  if(!fb||!queue.length)return;
@@ -679,7 +713,7 @@ function isiTetapan(){
 
 /* ============ 10. ADMIN ============ */
 function bukaKunciAdmin(){
- $('#pinGate').hidden=true;$('#adminBody').hidden=false;isiTetapan();renderSenaraiStaff();renderMasjid();isiManualStaff();$('#tNamaMasjid').value=tetapan.namaMasjid||'';$('#tAlamat').value=tetapan.alamat||'';
+  $('#pinGate').hidden=true;$('#adminBody').hidden=false;isiTetapan();renderSenaraiStaff();renderMasjid();isiManualStaff();isiEditStaff();$('#tNamaMasjid').value=tetapan.namaMasjid||'';$('#tAlamat').value=tetapan.alamat||'';$('#editTarikh').value=hariIni();
 }
 $('#btnPin').onclick=()=>{if($('#pinInput').value===tetapan.pin){bukaKunciAdmin()}else toast('❌ PIN salah')};
 $('#btnLock').onclick=()=>{$('#pinGate').hidden=false;$('#adminBody').hidden=true};
@@ -732,6 +766,73 @@ $('#btnManualClockIn').onclick=async()=>{
   $('#manualStaff').value='';$('#manualWaktu').value='';$('#manualMasa').value='';
   renderLog();renderSolat();renderSenaraiStaff();toast('✅ Clock In manual berjaya — '+s.nama+' ('+waktu+')');
 };
+function isiEditStaff(){
+  $('#editStaff').innerHTML='<option value="">-- Pilih --</option>'+staff.map(s=>`<option value="${s.id}">${s.nama} (${s.jawatan})</option>`).join('');
+}
+function renderSenaraiEditKehadiran(){
+  const staffId=$('#editStaff').value;
+  const tarikh=$('#editTarikh').value;
+  if(!staffId||!tarikh){$('#senaraiEditKehadiran').innerHTML='';return}
+  const recs=log.filter(l=>l.staffId===staffId&&l.tarikh===tarikh).slice().sort((a,b)=>a.ts-b.ts);
+  if(!recs.length){$('#senaraiEditKehadiran').innerHTML='<p class="muktamad">Tiada rekod untuk tarikh ini</p>';return}
+  $('#senaraiEditKehadiran').innerHTML=recs.map(r=>`<div class="logrow" style="cursor:pointer" data-id="${r.id}"><b>${r.nama}</b> ${r.waktu?`<span class="pill in">🕌 ${r.waktu}</span>`:''}<span class="pill in">IN ${to12(r.masaIn)}</span>${r.masaOut?`<span class="pill out">OUT ${to12(r.masaOut)}</span>`:''}<span style="color:#9ca3af;font-size:11px">ID: ${r.id}</span></div>`).join('');
+  $('#senaraiEditKehadiran').querySelectorAll('[data-id]').forEach(el=>{el.onclick=()=>{const rec=log.find(l=>l.id===el.dataset.id);if(rec){$('#editMasaIn').value=to12(rec.masaIn);$('#editMasaOut').value=rec.masaOut?to12(rec.masaOut):'';toast('Rekod dipilih: '+rec.id)}}});
+}
+$('#editStaff').onchange=()=>{renderSenaraiEditKehadiran()};
+$('#editTarikh').onchange=()=>{renderSenaraiEditKehadiran()};
+
+function initTimePicker(inputId,pickerId){
+  const input=$('#'+inputId),picker=$('#'+pickerId);
+  let selectedH=12,selectedM=0,selectedAP='AM';
+  function buildPicker(){
+    const hours=[...Array(12)].map((_,i)=>(i+1).toString().padStart(2,'0'));
+    const mins=['00','15','30','45'];
+    picker.innerHTML=`<div class="tp-row">
+      <div class="tp-col"><label>Jam</label><select id="tpH">${hours.map(h=>`<option value="${h}"${h===selectedH?' selected':''}>${h}</option>`).join('')}</select></div>
+      <div class="tp-col"><label>Minit</label><select id="tpM">${mins.map(m=>`<option value="${m}"${m===selectedM?' selected':''}>${m}</option>`).join('')}</select></div>
+      <div class="tp-col"><label>AM/PM</label><select id="tpAP"><option value="AM"${selectedAP==='AM'?' selected':''}>AM</option><option value="PM"${selectedAP==='PM'?' selected':''}>PM</option></select></div>
+    </div>
+    <div class="tp-actions"><button class="tp-cancel">Batal</button><button class="tp-ok">OK</button></div>`;
+    $('#tpH').onchange=e=>{selectedH=e.target.value};
+    $('#tpM').onchange=e=>{selectedM=e.target.value};
+    $('#tpAP').onchange=e=>{selectedAP=e.target.value};
+    picker.querySelector('.tp-ok').onclick=()=>{input.value=`${selectedH}:${selectedM} ${selectedAP}`;picker.hidden=true};
+    picker.querySelector('.tp-cancel').onclick=()=>{picker.hidden=true};
+  }
+  input.onfocus=()=>{buildPicker();picker.hidden=false};
+  document.addEventListener('click',e=>{if(!picker.contains(e.target)&&e.target!==input)picker.hidden=true});
+  input.onclick=e=>e.stopPropagation();
+}
+initTimePicker('editMasaIn','tpIn');
+initTimePicker('editMasaOut','tpOut');
+
+$('#btnKemaskiniKehadiran').onclick=async()=>{
+  const staffId=$('#editStaff').value,tarikh=$('#editTarikh').value,masaIn=$('#editMasaIn').value.trim(),masaOut=$('#editMasaOut').value.trim();
+  if(!staffId||!tarikh||!masaIn)return toast('❌ Lengkapkan staff, tarikh, masa In');
+  const recs=log.filter(l=>l.staffId===staffId&&l.tarikh===tarikh);
+  if(!recs.length)return toast('❌ Tiada rekod untuk staff/tarikh ini');
+  const rec=recs[0];
+  const mi=to24(masaIn),mo=masaOut?to24(masaOut):null;
+  if(!mi||mi===masaIn)return toast('❌ Format masa In tidak sah');
+  if(masaOut&&(!mo||mo===masaOut))return toast('❌ Format masa Out tidak sah');
+  await kemaskiniKehadiran(rec.id,{masaIn,masaOut:mo,open:!mo,statusOut:mo?'MANUAL':null});
+  renderLog();renderSolat();renderLaporan();renderSenaraiEditKehadiran();toast('✅ Kehadiran dikemaskini');
+};
+$('#btnPadamKehadiran').onclick=async()=>{
+  const staffId=$('#editStaff').value,tarikh=$('#editTarikh').value;
+  if(!staffId||!tarikh)return toast('❌ Pilih staff dan tarikh');
+  const recs=log.filter(l=>l.staffId===staffId&&l.tarikh===tarikh);
+  if(!recs.length)return toast('❌ Tiada rekod untuk padam');
+  if(!confirm('Padam SEMUA rekod kehadiran untuk staff ini pada '+tarikh+'?'))return;
+  for(const r of recs){await hapusKehadiranFB(r.id)}
+  renderLog();renderSolat();renderLaporan();renderSenaraiEditKehadiran();toast('✅ Rekod dipadam');
+};
+
+function hapusKehadiranFB(id){
+  if(!fb){log=log.filter(l=>l.id!==id);LS.set('pk_log',log);return}
+  const rec=log.find(l=>l.id===id);const ts=rec?rec.ts:null;
+  return runOp({t:'keh_del',p:{ts}}).then(({error})=>{if(error)qPush({t:'keh_del',p:{ts}});else log=log.filter(l=>l.id!==id)});
+}
 
 /* ============ 11. PDF DENGAN LOGO MASJID ============ */
 function eksportPDF(peribadi){
